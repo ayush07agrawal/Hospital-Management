@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import Designation from "./Designation";
 import Employee from "./Employee";
 
-const EmployeeDesignation = sequelize.define("EmployeeDesignation", {
+const Designated = sequelize.define("Designated", {
     Employee_ID: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -25,3 +25,5 @@ const EmployeeDesignation = sequelize.define("EmployeeDesignation", {
         }
     },
 });
+
+export default Designated;

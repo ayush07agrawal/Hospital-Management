@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import Employee from "./Employee";
 import Patient from "./Patient";
 import Room from "./Room";
-import Treatment from "./Treatment";
+import Treatment from "./Treatment_Details";
 
 const Designation = sequelize.define("Designation", {
 
