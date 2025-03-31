@@ -3,27 +3,11 @@ import { DataTypes } from "sequelize";
 import Employee from "./Employee";
 import Patient from "./Patient";
 
-const Treatment = sequelize.define("Treatment", {
+const Treatment_Details = sequelize.define("Treatment", {
   Treatment_ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-  },
-
-  Employee_ID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Employee,
-      key: "Employee_ID",
-    },
-  },
-
-  Patient_ID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Patient,
-      key: "Patient_ID",
-    },
   },
 
   Name: {
@@ -40,7 +24,6 @@ const Treatment = sequelize.define("Treatment", {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  
 });
 
-export default Treatment;
+export default Treatment_Details;

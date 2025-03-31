@@ -17,7 +17,7 @@ const Patient = sequelize.define(
       type: DataTypes.STRING(300),
       allowNull: false,
     },
-    Mobile_No: {
+    Mobile_Number: {
       type: DataTypes.STRING(20),
       allowNull: false,
     },
@@ -25,7 +25,7 @@ const Patient = sequelize.define(
       type: DataTypes.STRING(30),
       allowNull: true,
     },
-    Date_of_Birth: {
+    Date_Of_Birth: {
       type: DataTypes.DATE,
       allowNull: false,
     },

@@ -4,6 +4,7 @@ import Designation from "./Designation";
 import Employee from "./Employee";
 
 const Designated = sequelize.define("Designated", {
+    
     Employee_ID: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -12,10 +13,7 @@ const Designated = sequelize.define("Designated", {
             key: "Employee_ID"
         },
     },
-    Date_of_beginning: {
-        type: DataTypes.DATE,
-        allowNull: false,
-    },
+
     Designation_Name: {
         type: DataTypes.STRING(255),
         allowNull: false,
@@ -24,6 +22,12 @@ const Designated = sequelize.define("Designated", {
             key: "Designation_Name"
         }
     },
+
+    Date_of_beginning: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+
 });
 
 export default Designated;
