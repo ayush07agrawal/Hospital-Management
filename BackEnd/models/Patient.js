@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/database";
+import sequelize from "../config/database.js";
 
 const Patient = sequelize.define(
   "Patient",
@@ -20,6 +20,10 @@ const Patient = sequelize.define(
     Mobile_Number: {
       type: DataTypes.STRING(20),
       allowNull: false,
+    },
+    Alternative_Number:{
+      type: DataTypes.STRING(20),
+      allowNull: true,
     },
     Email_ID: {
       type: DataTypes.STRING(30),

@@ -33,14 +33,14 @@ const Treatments = sequelize.define("Treatments", {
         }
     },
 
-    Admission_Date: {
+    Start_Date_Time: {
         type: DataTypes.DATE,
         allowNull: false,
     },
 
-    Discharge_Date: {
+    End_Date_Time: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
     
 });

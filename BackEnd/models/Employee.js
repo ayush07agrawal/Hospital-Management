@@ -53,4 +53,5 @@ const Employee = sequelize.define(
   { timestamps: true }
 );
 
+
 export default Employee;

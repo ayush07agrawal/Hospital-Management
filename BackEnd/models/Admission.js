@@ -1,21 +1,22 @@
 import sequelize from "../config/database";
 import { DataTypes } from "sequelize";
-import Employee from "./Employee";
 import Patient from "./Patient";
-import Room from "./Room";
-import Treatment from "./Treatment_Details";
+import Treatments from "./Treatments";
+import Employee from "./Employee";
 
-const Designation = sequelize.define("Designation", {
-
-  Addmission_ID: {
+const Admission = sequelize.define("Admission", {
+  Patient_ID: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
+    references: {
+      model: Patient,
+      key: "Patient_ID",
+    },
   },
 
   Treatment_ID: {
     type: DataTypes.INTEGER,
     references: {
-      model: Treatment,
+      model: Treatments,
       key: "Treatment_ID",
     },
   },
@@ -29,7 +30,7 @@ const Designation = sequelize.define("Designation", {
     },
   },
 
-  Assigned_Employee_ID: {
+  Nurse_ID: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -42,21 +43,25 @@ const Designation = sequelize.define("Designation", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-        model: Room,
-        key: "Room_ID",
-    }
+      model: Room_Number,
+      key: "Room_Number",
+    },
   },
 
-  Admit_Time: {
+  Admission_Date_Time: {
     type: DataTypes.DATE,
     allowNull: false,
   },
 
-  Discharge_Time: {
+  Discharge_Date_Time: {
     type: DataTypes.DATE,
     allowNull: false,
   },
 
+  Emergency_Number: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
-export default Designation;
+export default Admission;

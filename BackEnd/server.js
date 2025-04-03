@@ -1,13 +1,15 @@
-import sequelize from "../config/database.js";
+import express from "express";
+import dotenv from "dotenv";
+import { Sequelize } from "sequelize";
+import Patient_Routes from "./routes/Patient_Routes.js";
 
-const syncDatabase = async () => {
-  try {
-    await sequelize.sync({ alter: true });
-    console.log("Database synced successfully!");
-  } catch (error) {
-    console.error("Error syncing database:", error);
-  }
-};
+dotenv.config();
 
-syncDatabase();
-export { User };
+const app = express();
+app.use(express.json());
+
+app.use("/patients", Patient_Routes);
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
