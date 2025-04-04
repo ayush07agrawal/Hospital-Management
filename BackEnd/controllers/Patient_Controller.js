@@ -1,6 +1,5 @@
 import { Patient } from "../models/index.js";
 
-// 📌 GET all patients
 export const getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.findAll();
@@ -10,7 +9,6 @@ export const getAllPatients = async (req, res) => {
   }
 };
 
-// 📌 GET a single patient by ID
 export const getPatientById = async (req, res) => {
   try {
     const patient = await Patient.findByPk(req.params.id);
@@ -21,7 +19,6 @@ export const getPatientById = async (req, res) => {
   }
 };
 
-// 📌 POST a new patient
 export const createPatient = async (req, res) => {
   try {
     const {
@@ -61,7 +58,6 @@ export const createPatient = async (req, res) => {
   }
 };
 
-// 📌 PUT (update) an existing patient
 export const updatePatient = async (req, res) => {
   try {
     const {
@@ -99,7 +95,6 @@ export const updatePatient = async (req, res) => {
   }
 };
 
-// 📌 DELETE a patient
 export const deletePatient = async (req, res) => {
   try {
     const patient = await Patient.findByPk(req.params.id);

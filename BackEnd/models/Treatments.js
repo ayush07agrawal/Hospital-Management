@@ -1,8 +1,8 @@
-import sequelize from "../config/database";
+import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Treatment_Details from "./Treatment_Details";
-import Employee from "./Employee";
-import Patient from "./Patient";
+import Treatment_Details from "./Treatment_Details.js";
+import Employee from "./Employee.js";
+import Patient from "./Patient.js";
 
 const Treatments = sequelize.define("Treatments", {
 

@@ -1,5 +1,6 @@
 import sequelize from "../config/database.js";
 import Patient from "./Patient.js";
+import Admission from "./Admission.js";
 
 const syncDatabase = async () => {
   try {
@@ -11,4 +12,4 @@ const syncDatabase = async () => {
 };
 
 syncDatabase();
-export { Patient };
+export { Patient, Admission };
