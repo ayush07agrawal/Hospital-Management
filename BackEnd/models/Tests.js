@@ -1,7 +1,5 @@
-import sequelize from "../config/database";
+import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Prescription from "./Prescription";
-import Test_Details from "./Test_Details";
 import Room from "./Room";
 import Patient from "./Patient";
 import Employee from "./Employee";

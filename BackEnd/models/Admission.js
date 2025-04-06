@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import Patient from "./Patient.js";
 import Treatments from "./Treatments.js";
 import Employee from "./Employee.js";
+import Room from "./Room.js";
 
 const Admission = sequelize.define("Admission", {
   Patient_ID: {
@@ -41,9 +42,8 @@ const Admission = sequelize.define("Admission", {
 
   Room_Number: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     references: {
-      model: Room_Number,
+      model: Room,
       key: "Room_Number",
     },
   },

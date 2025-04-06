@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import { Sequelize } from "sequelize";
 import Patient_Routes from "./routes/Patient_Routes.js";
 
 dotenv.config();
