@@ -23,11 +23,15 @@ const Designated = sequelize.define("Designated", {
         }
     },
 
-    Date_of_beginning: {
+    Date_Of_Beginning: {
         type: DataTypes.DATE,
         allowNull: false,
     },
 
+    Date_Of_Ending: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    }
 });
 
 export default Designated;
