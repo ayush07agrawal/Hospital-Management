@@ -18,3 +18,5 @@ const Bill = sequelize.define(
         }
     }
 );
+
+export default Bill;

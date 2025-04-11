@@ -1,9 +1,9 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Employee from "./Employee";
-import Patient from "./Patient";
-import Treatment from "./Treatment_Details";
-import Prescription from "./Prescription";
+import Employee from "./Employee.js";
+import Patient from "./Patient.js";
+import Treatment from "./Treatment_Details.js";
+import Prescription from "./Prescription.js";
 
 const Prescribes = sequelize.define("Prescribes", {
   Treatment_ID: {
@@ -28,7 +28,7 @@ const Prescribes = sequelize.define("Prescribes", {
     allowNull: false,
     references: {
       model: Prescription,
-      key: "Presciption_ID",
+      key: "Prescription_ID",
     },
   },
 

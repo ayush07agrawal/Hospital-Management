@@ -1,7 +1,7 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Designation from "./Designation";
-import Employee from "./Employee";
+import Designation from "./Designation.js";
+import Employee from "./Employee.js";
 
 const Designated = sequelize.define("Designated", {
     

@@ -1,14 +1,14 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Medicine from "./Medicine";
+import Medicine from "./Medicine.js";
 
 const Pharmacy = sequelize.define("Pharmacy", {
 
-    Med_Name: {
-        type: DataTypes.STRING(30),
+    Med_ID: {
+        type: DataTypes.INTEGER,
         references: {
             model: Medicine,
-            id: "Medicine_Name",
+            key: "Medicine_ID",
         }
     },
 

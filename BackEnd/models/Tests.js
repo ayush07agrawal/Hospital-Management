@@ -1,8 +1,9 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Room from "./Room";
-import Patient from "./Patient";
-import Employee from "./Employee";
+import Room from "./Room.js";
+import Patient from "./Patient.js";
+import Employee from "./Employee.js";
+import Test_Details from "./Test_Details.js";
 
 const Tests = sequelize.define(
     "Tests", {
@@ -10,35 +11,35 @@ const Tests = sequelize.define(
             type: DataTypes.INTEGER,
             references: {
                 model: Patient,
-                id: "Patient_ID"
+                key: "Patient_ID"
             },
         },
         Employee_ID : {
             type: DataTypes.INTEGER,
             references: {
                 model: Employee,
-                id: "Employee_ID"
+                key: "Employee_ID"
             },
         },
         Doctor_ID : {
             type: DataTypes.INTEGER,
             references: {
                 model: Employee,
-                id: "Employee_ID"
+                key: "Employee_ID"
             },
         },
         Test_Name : {
             type: DataTypes.STRING,
             references: {
-                model: Tests,
-                id: "Test_Name"
+                model: Test_Details,
+                key: "Test_Name"
             },
         },
         Room_Number : {
             type: DataTypes.INTEGER,
             references: {
                 model: Room,
-                id: "Room_Number"
+                key: "Room_Number"
             },
         },
         Date_Time : {

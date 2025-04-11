@@ -1,21 +1,21 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import Prescription from "./Prescription";
-import Medicine from "./Medicine";
+import Prescription from "./Prescription.js";
+import Medicine from "./Medicine.js";
 
 const Contains_Med = sequelize.define("Contains_Med", {
     Prescription_ID : {
         type: DataTypes.INTEGER,
         references: {
             model: Prescription,
-            id: "Prescription_ID"
+            key: "Prescription_ID"
         },
     },
-    Medicine_Name: {
-        type: DataTypes.STRING(30),
+    Medicine_ID: {
+        type: DataTypes.INTEGER,
         references: {
             model: Medicine,
-            id: "Medicine_Name"
+            key: "Medicine_ID"
         },
     },
     Quantity: {

@@ -1,5 +1,8 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
+import Treatments from "./Treatments.js";
+import Employee from "./Employee.js";
+import Room from "./Room.js";
 
 const Pays = sequelize.define("Pays", {
   Addmission_ID: {
@@ -10,7 +13,7 @@ const Pays = sequelize.define("Pays", {
   Treatment_ID: {
     type: DataTypes.INTEGER,
     references: {
-      model: Treatment,
+      model: Treatments,
       key: "Treatment_ID",
     },
   },
@@ -38,7 +41,7 @@ const Pays = sequelize.define("Pays", {
     allowNull: false,
     references: {
       model: Room,
-      key: "Room_ID",
+      key: "Room_Number",
     },
   },
 

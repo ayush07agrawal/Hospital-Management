@@ -1,6 +1,26 @@
 import sequelize from "../config/database.js";
 import Patient from "./Patient.js";
 import Admission from "./Admission.js";
+import Appointment from "./Appointment.js";
+import Bill from "./Bill.js";
+import Contains_Med from "./Contains_Med.js";
+import Designation from "./Designation.js";
+import Designated from "./Designated.js";
+import Employee from "./Employee.js";
+import Medicine from "./Medicine.js";
+import Payment from "./Payment.js";
+import Pays from "./Pays.js";
+import Pharmacy from "./Pharmacy.js";
+import Prescribes from "./Prescribes.js";
+import Prescription from "./Prescription.js";
+import Requires_Test from "./Requires_Test.js";
+import Room from "./Room.js";
+import Test_Details from "./Test_Details.js";
+import Tests from "./Tests.js";
+import Treatment_Details from "./Treatment_Details.js";
+import Treatments from "./Treatments.js";
+import Patient_Auth from "./Patient_Auth.js";
+import Employee_Auth from "./Employee_Auth.js";
 
 const syncDatabase = async () => {
   try {
@@ -12,4 +32,28 @@ const syncDatabase = async () => {
 };
 
 syncDatabase();
-export { Patient, Admission };
+
+export {
+  Patient,
+  Admission,
+  Appointment,
+  Bill,
+  Contains_Med,
+  Designation,
+  Designated,
+  Employee,
+  Medicine,
+  Payment,
+  Pays,
+  Pharmacy,
+  Prescribes,
+  Prescription,
+  Requires_Test,
+  Room,
+  Test_Details,
+  Tests,
+  Treatment_Details,
+  Treatments,
+  Patient_Auth,
+  Employee_Auth,
+};

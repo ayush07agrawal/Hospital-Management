@@ -1,7 +1,7 @@
 import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Prescription from "./Prescription";
-import Test_Details from "./Test_Details";
+import Prescription from "./Prescription.js";
+import Test_Details from "./Test_Details.js";
 
 const Requires_Test = sequelize.define(
     "Requires_Test", {
@@ -9,14 +9,14 @@ const Requires_Test = sequelize.define(
             type: DataTypes.INTEGER,
             references: {
                 model: Prescription,
-                id: "Prescription_ID"
+                key: "Prescription_ID"
             },
         },
         Test_Name : {
             type: DataTypes.STRING,
             references: {
                 model: Test_Details,
-                id: "Test_Name"
+                key: "Test_Name"
             },
         },
     }
