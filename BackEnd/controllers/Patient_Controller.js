@@ -68,7 +68,7 @@ export const updatePatient = async (req, res) => {
 			Medical_History,
 		} = req.body;
 
-		const patient = await Patient.findByPk(req.params.id);
+		const patient = await Patient.findOne({where: {Email_ID}});
 		if (!patient) return res.status(404).json({ error: "Patient not found" });
 
 		await patient.update({

@@ -28,6 +28,7 @@ const Patient = sequelize.define(
     Email_ID: {
       type: DataTypes.STRING(30),
       allowNull: true,
+      unique: true,
     },
     Date_Of_Birth: {
       type: DataTypes.DATE,
