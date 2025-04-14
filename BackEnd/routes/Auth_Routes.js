@@ -3,7 +3,7 @@ import authController from "../controllers/Auth_Controller.js";
 
 const router = express.Router();
 
-router.get('/login', authController.loginUser);
+router.post('/login', authController.loginUser);
 router.post('/mailVerify', authController.mailVerify);
 router.post('/verifyOTP', authController.verifyOTP);
 

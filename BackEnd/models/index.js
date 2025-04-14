@@ -23,7 +23,20 @@ import Patient_Auth from "./Patient_Auth.js";
 import Employee_Auth from "./Employee_Auth.js";
 import Department from "./Department.js";
 import Department_Has_Doctor from "./Department_Has_Doctor.js";
-import Notification_E2P from "./Notification_E2P.js";
+// import Notification_E2P from "./Notification_E2P.js";
+
+Patient.hasOne(Patient_Auth, { foreignKey: "Patient_ID", onDelete: "CASCADE" });
+Patient_Auth.belongsTo(Patient, { foreignKey: "Patient_ID" });
+
+Employee.hasOne(Employee_Auth, {
+  foreignKey: "Employee_ID",
+  onDelete: "CASCADE",
+});
+
+Employee_Auth.belongsTo(Employee, { foreignKey: "Employee_ID" });
+
+Patient.hasMany(Appointment, { foreignKey: "Patient_ID" });
+Appointment.belongsTo(Patient, { foreignKey: "Patient_ID" });
 
 const syncDatabase = async () => {
   try {
@@ -58,7 +71,7 @@ export {
   Test_Details,
   Tests,
   Treatment_Details,
-  Notification_E2P,
+  // Notification_E2P,
   Treatments,
   Patient_Auth,
   Employee_Auth,

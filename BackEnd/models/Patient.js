@@ -7,8 +7,7 @@ const Patient = sequelize.define(
     Patient_ID: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      // primaryKey: true,
-      unique: true, 
+      primaryKey: true,
     },
     First_Name: {
       type: DataTypes.STRING(30),
@@ -26,13 +25,12 @@ const Patient = sequelize.define(
       type: DataTypes.STRING(20),
       allowNull: false,
     },
-    Alternative_Number:{
+    Alternative_Number: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
     Email_ID: {
       type: DataTypes.STRING(30),
-      allowNull: true,
       allowNull: false,
     },
     Date_Of_Birth: {
@@ -55,15 +53,17 @@ const Patient = sequelize.define(
       type: DataTypes.STRING(1000),
       allowNull: true,
     },
-  }, {
+  },
+  {
     tableName: "Patient",
     timestamps: true,
     indexes: [
       {
         unique: true,
-        fields: ["Name", "Email_ID"],
+        fields: ["First_Name", "Last_Name", "Email_ID"],
       },
     ],
-  });
+  }
+);
 
 export default Patient;

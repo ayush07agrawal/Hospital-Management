@@ -11,8 +11,11 @@ const otpStore = new Map();
 
 const authController = {
   loginUser: async (req, res) => {
-    const { first_name, last_name, email, password, role } = req.query;
-    console.log(req.query);
+    let { first_name, last_name, email, password, role } = req.body;
+    console.log(req.body);
+    email=email.toLowerCase();
+    first_name=first_name.toLowerCase();
+    last_name=last_name.toLowerCase();
 
     try {
       if (role === "patient") {
@@ -20,12 +23,20 @@ const authController = {
         if (!emailRegex.test(email)) {
           return res.status(400).json({ message: "Invalid email" });
         }
-        const patient = await Patient.findOne({ where: { First_Name: first_name, Last_Name:last_name, Email_ID: email } });
+        const patient = await Patient.findOne({
+          where: {
+            First_Name: first_name,
+            Last_Name: last_name,
+            Email_ID: email,
+          },
+        });
+        
+        console.log(patient.dataValues);
         if (!patient) {
           return res.status(404).json({ message: "User not found" });
         }
         const get_Password = await Patient_Auth.findOne({
-          where: { Patient_ID: patient.Patient_ID },
+          where: { Patient_ID: patient.dataValues.Patient_ID },
         });
         if (!get_Password) {
           return res.status(404).json({ message: "User not found" });
@@ -34,27 +45,28 @@ const authController = {
           password,
           get_Password.Password
         );
-        const hash = await bcrypt.hash("ayush@123", 10);
 
+        // const hash = await bcrypt.hash("ayush@123", 10);
+        // console.log(hash);
+        
         if (!isPasswordValid) {
           return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = jwt.sign(
-          { id: patient.Patient_ID, email: patient.Email_ID },
+          { id: patient.dataValues.Patient_ID, email: patient.dataValues.Email_ID },
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
-        res.status(200).json({ message: "Login successful", token });
-
+        console.log("sent");
+        res.status(200).json({ role: "patient", message: "Login successful", token });
       } else if (role === "employee") {
-
         const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
         if (!emailRegex.test(email)) {
           return res.status(400).json({ message: "Invalid email" });
         }
         if (
           first_name == "database" &&
-          last_name  == "management" &&
+          last_name == "management" &&
           email == process.env.Email_User &&
           password == process.env.Email_Pass
         ) {
@@ -65,7 +77,13 @@ const authController = {
           );
           return res.status(200).json({ message: "Login successful", token });
         }
-        const employee = await Employee.findOne({ where: { First_Name: first_name, Last_Name:last_name, Email_ID: email } });
+        const employee = await Employee.findOne({
+          where: {
+            First_Name: first_name,
+            Last_Name: last_name,
+            Email_ID: email,
+          },
+        });
         if (!employee) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -87,7 +105,7 @@ const authController = {
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({ role: employee.Role, message: "Login successful", token });
       }
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
