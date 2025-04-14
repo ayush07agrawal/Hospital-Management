@@ -21,6 +21,9 @@ import Treatment_Details from "./Treatment_Details.js";
 import Treatments from "./Treatments.js";
 import Patient_Auth from "./Patient_Auth.js";
 import Employee_Auth from "./Employee_Auth.js";
+import Department from "./Department.js";
+import Department_Has_Doctor from "./Department_Has_Doctor.js";
+import Notification_E2P from "./Notification_E2P.js";
 
 const syncDatabase = async () => {
   try {
@@ -40,6 +43,8 @@ export {
   Bill,
   Contains_Med,
   Designation,
+  Department,
+  Department_Has_Doctor,
   Designated,
   Employee,
   Medicine,
@@ -53,6 +58,7 @@ export {
   Test_Details,
   Tests,
   Treatment_Details,
+  Notification_E2P,
   Treatments,
   Patient_Auth,
   Employee_Auth,

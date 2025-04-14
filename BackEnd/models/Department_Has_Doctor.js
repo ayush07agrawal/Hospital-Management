@@ -1,13 +1,14 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 import Employee from "./Employee.js";
+import Department from "./Department.js";
 
 const Department_Has_Doctor = sequelize.define("Department_Has_Doctor", {
-    Department_Has_Doctor_ID : {
+    Department_ID : {
         type: DataTypes.INTEGER,
         references: {
-            model: Prescription,
-            key: "Prescription_ID"
+            model: Department,
+            key: "Department_ID"
         },
     },
     Doctor_ID: {

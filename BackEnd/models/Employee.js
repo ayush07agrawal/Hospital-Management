@@ -9,9 +9,13 @@ const Employee = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    Name: {
+    First_Name: {
       type: DataTypes.STRING(30),
       allowNull: false,
+    },
+    Last_Name: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
     },
     Address: {
       type: DataTypes.STRING(100),

@@ -6,13 +6,14 @@ const Department = sequelize.define("Department", {
         type: DataTypes.INTEGER,
         allowNull:false,
         primaryKey: true,
+        autoIncrement:true,
     },
     Department_Name: {
         type: DataTypes.STRING(30),
         allowNull: false,
     },
     Description: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(200),
         allowNull: false,
     },
     Status: {

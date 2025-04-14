@@ -1,8 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import Patient_Routes from "./routes/Patient_Routes.js";
-import Auth_Routes from "./routes/Auth_Routes.js"; // Assuming you have an Auth file
 import cors from 'cors';
+
+import Patient_Routes from "./routes/Patient_Routes.js";
+import Department_Routes from "./routes/Department_Routes.js"; 
+import Auth_Routes from "./routes/Auth_Routes.js"; 
+import Notification_Routes from "./routes/Notification_Routes.js";
 
 dotenv.config();
 
@@ -11,7 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/patients", Patient_Routes);
-app.use("/auth", Auth_Routes); // Assuming you have an Auth_Routes file
+app.use("/auth", Auth_Routes);
+app.use("/department", Department_Routes); 
+app.use("/notification", Notification_Routes);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
