@@ -12,7 +12,7 @@ const otpStore = new Map();
 const authController = {
   loginUser: async (req, res) => {
     let { first_name, last_name, email, password, role } = req.body;
-    console.log(req.body);
+
     email=email.toLowerCase();
     first_name=first_name.toLowerCase();
     last_name=last_name.toLowerCase();
@@ -31,7 +31,6 @@ const authController = {
           },
         });
         
-        console.log(patient.dataValues);
         if (!patient) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -57,9 +56,11 @@ const authController = {
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
-        console.log("sent");
+
         res.status(200).json({ role: "patient", message: "Login successful", token });
-      } else if (role === "employee") {
+      } 
+      
+      else if (role === "employee") {
         const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
         if (!emailRegex.test(email)) {
           return res.status(400).json({ message: "Invalid email" });
@@ -114,7 +115,6 @@ const authController = {
 
   mailVerify: async (req, res) => {
     const { email } = req.body;
-    // console.log(req.body);
 
     try {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -210,8 +210,6 @@ const authController = {
       Height: Height,
       Weight: Weight,
     };
-
-    console.log(req.body);
     try {
       if (password !== crfmPassword) {
         return res.status(400).json({ message: "Password mismatch" });
@@ -219,7 +217,6 @@ const authController = {
       const existingPatient = await Patient.findOne({
         where: { Email_ID: email },
       });
-      console.log(existingPatient);
       if (existingPatient) {
         return res.status(400).json({ message: "Email already exists" });
       }
