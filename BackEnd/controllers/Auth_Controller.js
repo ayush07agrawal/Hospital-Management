@@ -13,9 +13,9 @@ const authController = {
   loginUser: async (req, res) => {
     let { first_name, last_name, email, password, role } = req.body;
 
-    email=email.toLowerCase();
-    first_name=first_name.toLowerCase();
-    last_name=last_name.toLowerCase();
+    email = email.toLowerCase();
+    first_name = first_name.toLowerCase();
+    last_name = last_name.toLowerCase();
 
     try {
       if (role === "patient") {
@@ -30,7 +30,7 @@ const authController = {
             Email_ID: email,
           },
         });
-        
+
         if (!patient) {
           return res.status(404).json({ message: "User not found" });
         }
@@ -47,20 +47,23 @@ const authController = {
 
         // const hash = await bcrypt.hash("ayush@123", 10);
         // console.log(hash);
-        
+
         if (!isPasswordValid) {
           return res.status(401).json({ message: "Invalid credentials" });
         }
         const token = jwt.sign(
-          { id: patient.dataValues.Patient_ID, email: patient.dataValues.Email_ID },
+          {
+            id: patient.dataValues.Patient_ID,
+            email: patient.dataValues.Email_ID,
+          },
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
 
-        res.status(200).json({ role: "patient", message: "Login successful", token });
-      } 
-      
-      else if (role === "employee") {
+        res
+          .status(200)
+          .json({ role: "patient", message: "Login successful", token });
+      } else if (role === "employee") {
         const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
         if (!emailRegex.test(email)) {
           return res.status(400).json({ message: "Invalid email" });
@@ -106,7 +109,9 @@ const authController = {
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
-        res.status(200).json({ role: employee.Role, message: "Login successful", token });
+        res
+          .status(200)
+          .json({ role: employee.Role, message: "Login successful", token });
       }
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
@@ -148,7 +153,6 @@ const authController = {
 
       res.status(200).json({
         message: "OTP sent successfully",
-        otp: otp,
       });
     } catch (error) {
       console.error("Error sending OTP:", error);
@@ -185,7 +189,8 @@ const authController = {
 
   patientSignUp: async (req, res) => {
     const {
-      Name,
+      First_Name,
+      Last_Name,
       Address,
       Mobile_Number,
       Alternative_Number,
@@ -200,7 +205,8 @@ const authController = {
     } = req.body;
 
     const patientData = {
-      Name: Name,
+      First_Name: First_Name,
+      Last_Name: Last_Name,
       Email_ID: Email_ID,
       Address: Address,
       Mobile_Number: Mobile_Number,
@@ -245,7 +251,7 @@ const authController = {
   },
 
   updatePassword: async (req, res) => {
-    const { email, newPassword } = req.body;
+    const { first_name, last_name, email, newPassword } = req.body;
 
     try {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -253,7 +259,13 @@ const authController = {
         return res.status(400).json({ message: "Invalid email" });
       }
 
-      const patient = await Patient.findOne({ where: { Email_ID: email } });
+      const patient = await Patient.findOne({
+        where: {
+          Email_ID: email,
+          First_Name: first_name,
+          Last_Name: last_name,
+        },
+      });
       if (!patient) {
         return res.status(404).json({ message: "User not found" });
       }

@@ -12,10 +12,12 @@ const Treatment_Details_Controller = {
   },
 
   // Get treatment details by ID
-  async getTreatmentById(req, res) {
-    const { Treatment_ID } = req.params;
+  async getTreatmentByPatientId(req, res) {
+    const patient_ID = req.params.id;
     try {
-      const treatment = await Treatment_Details.findByPk(Treatment_ID);
+      const treatment = await Treatment_Details.findAll({where: {
+        Patient_ID: patient_ID
+      }});
       if (!treatment) {
         return res.status(404).json({ message: "Treatment not found" });
       }

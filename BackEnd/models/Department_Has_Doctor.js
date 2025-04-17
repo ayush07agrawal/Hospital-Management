@@ -18,6 +18,12 @@ const Department_Has_Doctor = sequelize.define("Department_Has_Doctor", {
             key: "Employee_ID"
         }
     },
+
+    Appointment_Duration: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 20,
+    },
 });
 
 export default Department_Has_Doctor;

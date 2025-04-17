@@ -32,7 +32,7 @@ const Appointment = sequelize.define(
             allowNull: true,
         },
         Duration: {
-            type: DataTypes.STRING(30),
+            type: DataTypes.INTEGER,
             allowNull: true,
         },
         Priority: {

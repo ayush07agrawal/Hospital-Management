@@ -14,15 +14,6 @@ const Treatments = sequelize.define("Treatments", {
 		},
 	},
 
-	Patient_ID: {
-		type: DataTypes.INTEGER,
-		allowNull: false,
-		references: {
-			model: Patient,
-			key: "Patient_ID",
-		},
-	},
-
 	Employee_ID: {
 		type: DataTypes.INTEGER,
 		allowNull: false,

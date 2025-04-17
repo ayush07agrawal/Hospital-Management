@@ -15,7 +15,7 @@ const billController = {
     getBillById : async (req, res) => {
         try{
             const billId = req.params.id;
-            const bill = await Bill.findByPk(billId);
+            const bill = await Bill.findOne({where: {Bill_ID: billId}});
             if(!bill){
                 return res.status(404).json({ error: "Bill not found" });
             }
@@ -63,4 +63,4 @@ const billController = {
     },
 };
 
-module.exports = billController;
+export default billController;
