@@ -133,7 +133,6 @@ const authController = {
 
 			if (!sendMail) return res.status(500).json({ message: "Failed to send OTP" });
 
-			console.log(otp);
 			otpStore.set(email, { OTP: otp, expiresAt: Date.now() + 5 * 60 * 1000 });
 
 			res.status(200).json({
@@ -185,7 +184,7 @@ const authController = {
 			password,
 			crfmPassword,
 		} = req.body;
-		// console.log(req.body);
+
 		const patientData = {
 			First_Name: First_Name,
 			Last_Name: Last_Name,
@@ -202,11 +201,9 @@ const authController = {
 			if (password !== crfmPassword) {
 				return res.status(400).json({ message: "Password mismatch" });
 			}
-			console.log(Email_ID);
 			const existingPatient = await Patient.findOne({
-				where: { Email_ID: Email_ID },
+				where: { Email_ID: Email_ID, First_Name: First_Name, Last_Name: Last_Name },
 			});
-			console.log(existingPatient);
 			if (existingPatient) {
 				return res.status(400).json({ message: "Email already exists" });
 			}
