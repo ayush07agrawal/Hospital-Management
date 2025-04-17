@@ -11,4 +11,6 @@ router.post('/patientSignUp', authController.patientSignUp);
 
 router.post('/updatePassword', authController.updatePassword);
 
+router.get('/getPatientByName', authController.getPatientByName);
+
 export default router;

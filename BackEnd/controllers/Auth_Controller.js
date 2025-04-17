@@ -271,6 +271,39 @@ const authController = {
 			res.status(500).json({ message: "Could not update the password!", error });
 		}
 	},
+
+	getPatientByName: async (req, res) => {
+		try{
+			const { First_Name, role, Email_ID } = req.body;
+			if( role === "patient" ) {
+				const Patient = Patient.findOne({
+					where: {
+						First_Name: First_Name,
+						Email_ID: Email_ID,	
+					}
+				});
+				if(!Patient) {
+					return res.status(404).json({ message: "Patient not found" });
+				}
+				res.status(200).json({ message: "Patient found", Patient });
+			}
+			else if(role === "employee") {
+				const employee = Employee.findOne({
+					where: {
+						First_Name: First_Name,
+						Email_ID: Email_ID,
+					}
+				});
+				if(!employee) {
+					return res.status(404).json({ message: "Employee not found" });
+				}
+				res.status(200).json({ message: "Employee found", employee });
+			}
+		} catch(error) {
+			console.error("Error fetching patient:", error);
+			res.status(500).json({ message: "Server error", error: error.message });
+		}
+	},
 };
 
 export default authController;
