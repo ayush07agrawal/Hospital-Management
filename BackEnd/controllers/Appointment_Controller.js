@@ -1,5 +1,49 @@
 import { Appointment } from "../models/Appointment.js";
 
+function getPriorityFromReason(reason) {
+  if (!reason || typeof reason !== "string") return 5;
+
+  const lowerReason = reason.toLowerCase();
+
+  if (
+    lowerReason.includes("chest pain") ||
+    lowerReason.includes("heart") ||
+    lowerReason.includes("stroke") ||
+    lowerReason.includes("severe bleeding")
+  ) {
+    return 1;
+  }
+
+  if (
+    lowerReason.includes("difficulty breathing") ||
+    lowerReason.includes("shortness of breath") ||
+    lowerReason.includes("high fever") ||
+    lowerReason.includes("head trauma")
+  ) {
+    return 2;
+  }
+
+  if (
+    lowerReason.includes("infection") ||
+    lowerReason.includes("fracture") ||
+    lowerReason.includes("vomiting") ||
+    lowerReason.includes("diarrhea")
+  ) {
+    return 3;
+  }
+
+  if (
+    lowerReason.includes("checkup") ||
+    lowerReason.includes("follow up") ||
+    lowerReason.includes("routine") ||
+    lowerReason.includes("headache")
+  ) {
+    return 4;
+  }
+
+  return 5;
+}
+
 const AppointmentController = {
   getAllAppointments: async (req, res) => {
     try {
@@ -31,8 +75,19 @@ const AppointmentController = {
 
   bookAppointment: async (req, res) => {
     try {
-      const appointmentData = req.body;
-      const newAppointment = await Appointment.create(appointmentData);
+      const { Patient_ID, Employee_ID, Date_Time, Duration, Reason } = req.body;
+      const Priority = getPriorityFromReason(Reason);
+      const newAppointment = await Appointment.create({
+        Patient_ID: Patient_ID,
+        Employee_ID: Employee_ID,
+        Date_Time: Date_Time,
+        Duration: Duration,
+        Reason: Reason,
+        Priority: Priority,
+      });
+      if (!newAppointment) {
+        return res.status(400).json({ error: "Failed to create appointment" });
+      }
       res.status(201).json(newAppointment);
     } catch (error) {
       res.status(500).json({ error: "Failed to create appointment" });
@@ -61,11 +116,9 @@ const AppointmentController = {
         return res.status(404).json({ error: "Appointment not found" });
       }
       await appointment.destroy();
-      res
-        .status(200)
-        .json({
-          message: `Appointment with ID: ${req.params.id} deleted successfully`,
-        });
+      res.status(200).json({
+        message: `Appointment with ID: ${req.params.id} deleted successfully`,
+      });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete appointment" });
     }

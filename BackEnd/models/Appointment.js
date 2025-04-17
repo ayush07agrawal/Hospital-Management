@@ -35,6 +35,10 @@ const Appointment = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: true,
         },
+        Reason: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         Priority: {
             type:DataTypes.INTEGER,
             allowNull: true,
