@@ -23,7 +23,8 @@ import Patient_Auth from "./Patient_Auth.js";
 import Employee_Auth from "./Employee_Auth.js";
 import Department from "./Department.js";
 import Department_Has_Doctor from "./Department_Has_Doctor.js";
-// import Notification_E2P from "./Notification_E2P.js";
+import Contact_Us from "./Contact_Us.js";
+import Feedback from "./Feedback.js";
 
 Patient.hasOne(Patient_Auth, { foreignKey: "Patient_ID", onDelete: "CASCADE" });
 Patient_Auth.belongsTo(Patient, { foreignKey: "Patient_ID" });
@@ -55,11 +56,13 @@ export {
   Appointment,
   Bill,
   Contains_Med,
+  Contact_Us,
   Designation,
   Department,
   Department_Has_Doctor,
   Designated,
   Employee,
+  Feedback,
   Medicine,
   Payment,
   Pays,
