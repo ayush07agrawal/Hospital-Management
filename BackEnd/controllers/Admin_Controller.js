@@ -1,4 +1,4 @@
-import { Employee } from "../models/Employee.js";
+import { Employee } from "../models/index.js";
 
 const adminController = {
   addEmployee: async (req, res) => {
@@ -97,3 +97,5 @@ const adminController = {
     }
   },
 };
+
+export default adminController;

@@ -1,10 +1,10 @@
 import express from "express";
-import { Prescription_Controller } from '../controllers/Prescription_Controller.js';
+import prescriptionController from '../controllers/Prescription_Controller.js';
 
 const router = express.Router();
 
-router.get('/getAllPrescriptions', Prescription_Controller.getAllPrescriptions);
-router.get('/getPrescriptionById/:id', Prescription_Controller.getPrescriptionById);
-router.post('/addPrescription', Prescription_Controller.addPrescription);
+// router.get('/getAllPrescriptions', prescriptionController.getAllPrescriptions);
+router.get('/getPrescriptionById/:id', prescriptionController.getAllPrescriptionById);
+// router.post('/addPrescription', prescriptionController.addPrescription);
 
 export default router;

@@ -1,8 +1,8 @@
-import { Prescription } from "../models/Prescription";
-import Contains_Med from "../models/Contains_Med";
-import Requires_Test from "../models/Requires_Test";
-import Medicine from "../models/Medicine";
-import Test_Details from "../models/Test_Details";
+import {Prescription} from "../models/index.js";
+import {Contains_Med} from "../models/index.js";
+import {Requires_Test} from "../models/index.js";
+import {Medicine} from "../models/index.js";
+import {Test_Details} from "../models/index.js";
 
 const prescriptionController = {
     getAllPrescriptionById: async (req, res) => {
