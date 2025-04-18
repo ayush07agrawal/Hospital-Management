@@ -69,10 +69,32 @@ const AppointmentController = {
           Patient_ID: req.params.id,
         },
       });
-      if (!appointment) {
-        return res.status(404).json({ error: "Appointment not found" });
+      //Add doctor name, department name, doctor room number to the appointment object
+      const appointmentsWithDetails = await Promise.all(
+        appointment.map(async (appointment) => {
+          const doctor = await Employee.findOne({
+            where: { Employee_ID: appointment.Employee_ID },
+          });
+          const department = await Department.findOne({
+            where: {
+              Department_ID: appointment.Department_ID,
+            },
+          });
+          const doctorName = doctor.First_Name + " " + doctor.Last_Name;
+          const departmentName = department.Department_Name;
+          const doctorRoomNumber = doctor.Room_Number;
+          return {
+            ...appointment.toJSON(),
+            Doctor_Name: doctorName,
+            Department_Name: departmentName,
+            Doctor_Room_Number: doctorRoomNumber,
+          };
+        })
+      );
+      if (!appointmentsWithDetails || appointmentsWithDetails.length === 0) {
+        return res.status(404).json({ error: "No appointments found" });
       }
-      res.status(200).json(appointment);
+      res.status(200).json(appointmentsWithDetails);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch appointment" });
     }
