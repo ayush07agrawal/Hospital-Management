@@ -81,7 +81,6 @@ const AppointmentController = {
     try {
       const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } =
         req.body;
-      console.log(req.body);
 
       const startOfDay = new Date(Date_Time);
       startOfDay.setHours(0, 0, 0, 0);
@@ -99,7 +98,6 @@ const AppointmentController = {
           },
         },
       });
-      console.log("Already", alreadyBooked);
 
       if (alreadyBooked) {
         return res.status(400).json({
@@ -111,7 +109,6 @@ const AppointmentController = {
           Department_Name: Department_Name,
         },
       });
-      console.log("Dep", Department_ID);
 
       if (!Department_ID) {
         return res.status(400).json({ error: "Department not found" });
@@ -140,7 +137,6 @@ const AppointmentController = {
         Reason: Reason,
         Priority: Priority,
       });
-      console.log(newAppointment);
       if (!newAppointment) {
         return res.status(400).json({ error: "Failed to create appointment" });
       }
