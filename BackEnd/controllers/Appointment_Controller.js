@@ -80,14 +80,20 @@ const AppointmentController = {
               Department_ID: appointment.Department_ID,
             },
           });
+          //Add all details from doctor object
           const doctorName = doctor.First_Name + " " + doctor.Last_Name;
           const departmentName = department.Department_Name;
           const doctorRoomNumber = doctor.Room_Number;
+          const Languages = doctor.Languages;
+          const Gender = doctor.Gender;
+          
           return {
             ...appointment.toJSON(),
             Doctor_Name: doctorName,
             Department_Name: departmentName,
             Doctor_Room_Number: doctorRoomNumber,
+            Languages: Languages,
+            Gender: Gender,
           };
         })
       );
