@@ -1,7 +1,8 @@
-import { Appointment } from "../models/Appointment.js";
+import Appointment from "../models/Appointment.js";
 import Employee from "../models/Employee.js";
 import Department_Has_Doctor from "../models/Department_Has_Doctor.js";
 import Department from "../models/Department.js";
+import { Op } from "sequelize";
 
 function getPriorityFromReason(reason) {
   if (!reason || typeof reason !== "string") return 5;
@@ -78,29 +79,41 @@ const AppointmentController = {
 
   bookAppointment: async (req, res) => {
     try {
-      const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } = req.body;
-      
+      const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } =
+        req.body;
+      console.log(req.body);
+
+      const startOfDay = new Date(Date_Time);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(Date_Time);
+      endOfDay.setHours(23, 59, 59, 999);
+
       const alreadyBooked = await Appointment.findOne({
         where: {
-          Employee_ID: Employee_ID,
-          Patient_ID: Patient_ID,
+          Employee_ID,
+          Patient_ID,
           Date_Time: {
-            [Op.gte]: new Date(Date_Time).setHours(0, 0, 0, 0),
-            [Op.lt]: new Date(Date_Time).setHours(23, 59, 59, 999),
+            [Op.gte]: startOfDay,
+            [Op.lt]: endOfDay,
           },
-        }
+        },
       });
+      console.log("Already", alreadyBooked);
 
-      if(alreadyBooked) {
-        return res.status(400).json({ error: "Appointment already booked for same date with same doctor!" });
+      if (alreadyBooked) {
+        return res.status(400).json({
+          error: "Appointment already booked for same date with same doctor!",
+        });
       }
       const Department_ID = await Department.findOne({
         where: {
           Department_Name: Department_Name,
-        }
+        },
       });
+      console.log("Dep", Department_ID);
 
-      if(!Department_ID) {
+      if (!Department_ID) {
         return res.status(400).json({ error: "Department not found" });
       }
 
@@ -108,13 +121,15 @@ const AppointmentController = {
         where: {
           Doctor_ID: Employee_ID,
           Department_ID: Department_ID.Department_ID,
-        }
+        },
       });
 
-      if(!Duration) {
-        return res.status(400).json({ error: "Doctor not found in the specified department" });
+      if (!Duration) {
+        return res
+          .status(400)
+          .json({ error: "Doctor not found in the specified department" });
       }
-      
+
       const Priority = getPriorityFromReason(Reason);
       const newAppointment = await Appointment.create({
         Patient_ID: Patient_ID,
@@ -125,11 +140,13 @@ const AppointmentController = {
         Reason: Reason,
         Priority: Priority,
       });
+      console.log(newAppointment);
       if (!newAppointment) {
         return res.status(400).json({ error: "Failed to create appointment" });
       }
       res.status(201).json(newAppointment);
     } catch (error) {
+      console.log("Error:", error);
       res.status(500).json({ error: "Failed to create appointment" });
     }
   },
