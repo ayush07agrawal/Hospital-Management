@@ -1,4 +1,4 @@
-import { Appointment } from "../models/Appointment.js";
+import Appointment  from "../models/Appointment.js";
 
 function getPriorityFromReason(reason) {
   if (!reason || typeof reason !== "string") return 5;

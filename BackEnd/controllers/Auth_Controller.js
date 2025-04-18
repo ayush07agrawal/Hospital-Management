@@ -11,7 +11,7 @@ const otpStore = new Map();
 
 const authController = {
 	loginUser: async (req, res) => {
-		let { first_name, last_name, email, password, role } = req.query;
+		let { first_name, last_name, email, password, role } = req.body;
 
 		email = email.toLowerCase();
 		first_name = first_name.toLowerCase();
