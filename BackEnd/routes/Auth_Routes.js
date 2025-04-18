@@ -13,4 +13,8 @@ router.post('/updatePassword', authController.updatePassword);
 
 router.get('/getPatientByName', authController.getPatientByName);
 
+router.get('/check-auth', authController.checkAuth);
+
+router.post('/logout', authController.logoutUser);
+
 export default router;

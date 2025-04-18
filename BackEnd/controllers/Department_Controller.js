@@ -3,13 +3,15 @@ import { Department_Has_Doctor } from "../models/index.js";
 
 const departmentController = {
   getAllDepartments: async (req, res) => {
+    console.log("Requested");
     try {
       const allDepartments = await Department.findAll();
       if (!allDepartments) {
         return res.status(401).json({ message: "No departments found!" });
       }
       res.status(200).json(allDepartments);
-    } catch (error) {
+    }
+    catch (error) {
       res.status(500).json({ error: "Error fetching departments" });
     }
   },

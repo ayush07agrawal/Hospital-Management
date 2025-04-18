@@ -18,11 +18,12 @@ const authController = {
 		last_name = last_name.toLowerCase();
 
 		try {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(email)) {
+				return res.status(400).json({ message: "Invalid email" });
+			}
+
 			if (role === "patient") {
-				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				if (!emailRegex.test(email)) {
-					return res.status(400).json({ message: "Invalid email" });
-				}
 				const patient = await Patient.findOne({
 					where: {
 						First_Name: first_name,
@@ -31,48 +32,42 @@ const authController = {
 					},
 				});
 
-				if (!patient) {
-					return res.status(404).json({ message: "User not found" });
-				}
-				const get_Password = await Patient_Auth.findOne({
-					where: { Patient_ID: patient.dataValues.Patient_ID },
+				if (!patient) return res.status(404).json({ message: "User not found" });
+
+				const patientAuth = await Patient_Auth.findOne({
+					where: { Patient_ID: patient.Patient_ID },
 				});
-				if (!get_Password) {
-					return res.status(404).json({ message: "User not found" });
-				}
-				const isPasswordValid = await bcrypt.compare(password, get_Password.Password);
+				if (!patientAuth) return res.status(404).json({ message: "User not found" });
 
-				// const hash = await bcrypt.hash("ayush@123", 10);
-				// console.log(hash);
+				const isPasswordValid = await bcrypt.compare(password, patientAuth.Password);
+				if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials" });
 
-				if (!isPasswordValid) {
-					return res.status(401).json({ message: "Invalid credentials" });
-				}
-				const token = jwt.sign(
-					{ id: patient.dataValues.Patient_ID, email: patient.dataValues.Email_ID },
-					process.env.JWT_SECRET,
-					{ expiresIn: "1h" }
-				);
+				const token = jwt.sign({ Role:'patient', First_Name:patient.First_Name, Email_ID: patient.Email_ID }, process.env.JWT_SECRET, {
+					expiresIn: "24h",
+				});
 
-				res.status(200).json({ role: "patient", message: "Login successful", token });
-			} else if (role === "employee") {
-				const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
-				if (!emailRegex.test(email)) {
-					return res.status(400).json({ message: "Invalid email" });
-				}
+				res.cookie("token", token, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production", 
+					sameSite: "Strict",
+					maxAge: 86400000,
+				});
+
+				return res.status(200).json({ role: "patient", message: "Login successful", token });
+			}
+
+			if (role === "employee") {
+				// If special database management user
 				if (
-					first_name == "database" &&
-					last_name == "management" &&
-					email == process.env.Email_User &&
-					password == process.env.Email_Pass
+					first_name === "database" &&
+					last_name === "management" &&
+					email === process.env.Email_User &&
+					password === process.env.Email_Pass
 				) {
-					const token = jwt.sign(
-						{ id: employee.Employee_ID, email: employee.email },
-						process.env.JWT_SECRET,
-						{ expiresIn: "1h" }
-					);
-					return res.status(200).json({ message: "Login successful", token });
+					const token = jwt.sign({ id: "admin", email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+					return res.status(200).json({ role: "admin", message: "Login successful", token });
 				}
+
 				const employee = await Employee.findOne({
 					where: {
 						First_Name: first_name,
@@ -80,25 +75,38 @@ const authController = {
 						Email_ID: email,
 					},
 				});
-				if (!employee) {
-					return res.status(404).json({ message: "User not found" });
-				}
-				const get_password = await Employee_Auth.findOne({
+				if (!employee) return res.status(404).json({ message: "User not found" });
+
+				const employeeAuth = await Employee_Auth.findOne({
 					where: { Employee_ID: employee.Employee_ID },
 				});
-				if (!get_password) {
-					return res.status(404).json({ message: "User not found" });
-				}
-				const isPasswordValid = await bcrypt.compare(password, get_password.Password);
-				if (!isPasswordValid) {
-					return res.status(401).json({ message: "Invalid credentials" });
-				}
-				const token = jwt.sign({ id: employee.Employee_ID, email: employee.email }, process.env.JWT_SECRET, {
-					expiresIn: "1h",
+				if (!employeeAuth) return res.status(404).json({ message: "User not found" });
+
+				const isPasswordValid = await bcrypt.compare(password, employeeAuth.Password);
+				if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials" });
+
+				const token = jwt.sign({ Role:'employee', First_Name:employee.First_Name, Email_ID: employee.Email_ID }, process.env.JWT_SECRET, {
+					expiresIn: "24h",
 				});
-				res.status(200).json({ role: employee.Role, message: "Login successful", token });
+
+				res.cookie("token", token, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production", 
+					sameSite: "Strict",
+					maxAge: 86400000,
+				});
+
+				return res.status(200).json({
+					role: employee.Role,
+					message: "Login successful",
+					token,
+				});
 			}
-		} catch (error) {
+
+			res.status(400).json({ message: "Invalid role" });
+		}
+		catch (error) {
+			console.error("Login error:", error);
 			res.status(500).json({ message: "Server error", error: error.message });
 		}
 	},
@@ -228,8 +236,8 @@ const authController = {
 		}
 	},
 
-  updatePassword: async (req, res) => {
-    const { first_name, last_name, email, newPassword } = req.body;
+	updatePassword: async (req, res) => {
+		const { first_name, last_name, email, newPassword } = req.body;
 
 		try {
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -237,16 +245,16 @@ const authController = {
 				return res.status(400).json({ message: "Invalid email" });
 			}
 
-      const patient = await Patient.findOne({
-        where: {
-          Email_ID: email,
-          First_Name: first_name,
-          Last_Name: last_name,
-        },
-      });
-      if (!patient) {
-        return res.status(404).json({ message: "User not found" });
-      }
+			const patient = await Patient.findOne({
+				where: {
+					Email_ID: email,
+					First_Name: first_name,
+					Last_Name: last_name,
+				},
+			});
+			if (!patient) {
+				return res.status(404).json({ message: "User not found" });
+			}
 
 			const get_Password = await Patient_Auth.findOne({
 				where: { Patient_ID: patient.Patient_ID },
@@ -272,36 +280,70 @@ const authController = {
 		}
 	},
 
+	logoutUser:async (req, res) => {
+		res.clearCookie("token", { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+		res.status(200).json({ message: "Logged out successfully" });
+	},
+
 	getPatientByName: async (req, res) => {
-		try{
+		try {
 			const { First_Name, role, Email_ID } = req.body;
-			if( role === "patient" ) {
+			if (role === "patient") {
 				const Patient = Patient.findOne({
 					where: {
 						First_Name: First_Name,
-						Email_ID: Email_ID,	
-					}
+						Email_ID: Email_ID,
+					},
 				});
-				if(!Patient) {
+				if (!Patient) {
 					return res.status(404).json({ message: "Patient not found" });
 				}
 				res.status(200).json({ message: "Patient found", Patient });
-			}
-			else if(role === "employee") {
+			} else if (role === "employee") {
 				const employee = Employee.findOne({
 					where: {
 						First_Name: First_Name,
 						Email_ID: Email_ID,
-					}
+					},
 				});
-				if(!employee) {
+				if (!employee) {
 					return res.status(404).json({ message: "Employee not found" });
 				}
 				res.status(200).json({ message: "Employee found", employee });
 			}
-		} catch(error) {
+		} catch (error) {
 			console.error("Error fetching patient:", error);
 			res.status(500).json({ message: "Server error", error: error.message });
+		}
+	},
+
+	checkAuth: async (req, res) => {
+		const token = req.cookies.token;
+		if(!token){
+			return res.status(401).json({ message: "No token provided" });
+		}
+		try {
+			const decoded = jwt.verify(token, process.env.JWT_SECRET);
+			const { Role, First_Name, Email_ID } = decoded;	
+			let user;
+			if (Role.toLowerCase() === "patient") {
+				user = await Patient.findOne({ where: { Email_ID:Email_ID, First_Name:First_Name }});
+			} 
+			else {
+				user = await Employee.findOne({ where: { Email_ID:Email_ID, First_Name:First_Name }});
+			}
+			if (!user) {
+				return res.status(404).json({ message: "User not found" });
+			}
+			res.status(200).json({
+				success: true,
+				message: "Authenticated",
+				user: {...user.dataValues, role:Role.toLowerCase()},
+			})
+		}
+		catch (err) {
+			console.error("Auth error:", err);
+			return res.status(403).json({ message: "Invalid or expired token" });
 		}
 	},
 };
