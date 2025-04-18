@@ -1,5 +1,7 @@
 import { Appointment } from "../models/Appointment.js";
 import Employee from "../models/Employee.js";
+import Department_Has_Doctor from "../models/Department_Has_Doctor.js";
+import Department from "../models/Department.js";
 
 function getPriorityFromReason(reason) {
   if (!reason || typeof reason !== "string") return 5;
@@ -76,27 +78,50 @@ const AppointmentController = {
 
   bookAppointment: async (req, res) => {
     try {
-      const { Patient_ID, Employee_ID, Date_Time, Duration, Reason } = req.body;
+      const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } = req.body;
+      
       const alreadyBooked = await Appointment.findOne({
         where: {
           Employee_ID: Employee_ID,
           Patient_ID: Patient_ID,
-          //I want to check if the appointment is already booked for the same date not the same time
           Date_Time: {
             [Op.gte]: new Date(Date_Time).setHours(0, 0, 0, 0),
             [Op.lt]: new Date(Date_Time).setHours(23, 59, 59, 999),
           },
         }
       });
+
       if(alreadyBooked) {
         return res.status(400).json({ error: "Appointment already booked for same date with same doctor!" });
       }
+      const Department_ID = await Department.findOne({
+        where: {
+          Department_Name: Department_Name,
+        }
+      });
+
+      if(!Department_ID) {
+        return res.status(400).json({ error: "Department not found" });
+      }
+
+      const Duration = await Department_Has_Doctor.findOne({
+        where: {
+          Doctor_ID: Employee_ID,
+          Department_ID: Department_ID.Department_ID,
+        }
+      });
+
+      if(!Duration) {
+        return res.status(400).json({ error: "Doctor not found in the specified department" });
+      }
+      
       const Priority = getPriorityFromReason(Reason);
       const newAppointment = await Appointment.create({
         Patient_ID: Patient_ID,
         Employee_ID: Employee_ID,
+        Department_ID: Department_ID.Department_ID,
         Date_Time: Date_Time,
-        Duration: Duration,
+        Duration: Duration.Appointment_Duration,
         Reason: Reason,
         Priority: Priority,
       });

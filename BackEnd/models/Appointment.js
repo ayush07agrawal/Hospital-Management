@@ -2,6 +2,7 @@ import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
 import Patient from "./Patient.js";
 import Employee from "./Employee.js"
+import Department from "./Department.js"
 
 const Appointment = sequelize.define(
     "Appointment", {
@@ -25,6 +26,14 @@ const Appointment = sequelize.define(
             references: {
                 model: Employee,
                 key: "Employee_ID"
+            }
+        },
+        Department_ID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: Department,
+                key: "Department_ID"
             }
         },
         Date_Time: {
