@@ -14,6 +14,7 @@ import Prescription_Routes from "./routes/Prescription_Routes.js";
 import Contact_us_Routes from "./routes/Contact_Us_Routes.js";
 import Feedback_Routes from "./routes/Feedback_Routes.js";
 import Appointment_Routes from "./routes/Appointment_Routes.js";
+import Treatment_Details_Routes from "./routes/Treatment_Details_Routes.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use("/admin", Admin_Routes);
 app.use("/doctor", Doctor_Routes);
 app.use("/prescription", Prescription_Routes);
 app.use("/appointment", Appointment_Routes);
+app.use("/treatmentDetails", Treatment_Details_Routes);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
