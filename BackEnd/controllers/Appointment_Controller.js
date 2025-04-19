@@ -209,7 +209,6 @@ const AppointmentController = {
     try {
       const doctorID = req.params.id;
       const { month, year } = req.query;
-      console.log(doctorID, month, year);
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0);
       const appointments = await Appointment.findAll({

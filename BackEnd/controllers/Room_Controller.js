@@ -1,4 +1,4 @@
-const { Room } = require("../models/Room.js");
+import { Room } from "../models/index.js";
 
 // Controller for handling designated routes
 const Room_Controller = {
@@ -55,4 +55,4 @@ const Room_Controller = {
   },
 };
 
-module.exports = Room_Controller;
+export default Room_Controller;

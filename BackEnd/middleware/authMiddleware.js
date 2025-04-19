@@ -4,7 +4,6 @@ import Employee from "../models/Employee.js";
 
 const verifyToken = async (req, res, next) => {
 	const token = req.cookies.token;
-  console.log(token);
 	next();
 	return;
 	
