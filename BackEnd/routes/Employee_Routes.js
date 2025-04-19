@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getAllEmployee,
+  getAllEmployees,
   getEmployeeById,
   createEmployee,
   updateEmployee,
