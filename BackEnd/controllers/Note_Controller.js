@@ -32,7 +32,7 @@ const noteController = {
             res.status(500).json({ error: "Error adding appointment note" });
         }
     },
-    removeNoteTreatment: async (req, res) => {
+    removeNoteAppointment: async (req, res) => {
         try {
             const { Appointment_Note_ID } = req.params;
             const note = await Treatment_Note.findOne({where: {Appointment_Note_ID}});
