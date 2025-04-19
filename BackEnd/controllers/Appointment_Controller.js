@@ -86,7 +86,7 @@ const AppointmentController = {
           const Gender = doctor.Gender;
           
           return {
-            ...appointment.datavalues.toJSON(),
+            ...appointment.toJSON(),
             Doctor_Name: doctorName,
             Department_Name: departmentName,
             Doctor_Room_Number: doctorRoomNumber,
