@@ -69,7 +69,6 @@ const AppointmentController = {
           Patient_ID: req.params.id,
         },
       });
-      //Add doctor name, department name, doctor room number to the appointment object
       const appointmentsWithDetails = await Promise.all(
         appointment.map(async (appointment) => {
           const doctor = await Employee.findOne({
@@ -80,7 +79,6 @@ const AppointmentController = {
               Department_ID: appointment.Department_ID,
             },
           });
-          //Add all details from doctor object
           const doctorName = doctor.First_Name + " " + doctor.Last_Name;
           const departmentName = department.Department_Name;
           const doctorRoomNumber = doctor.Room_Number;
@@ -88,7 +86,7 @@ const AppointmentController = {
           const Gender = doctor.Gender;
           
           return {
-            ...appointment.toJSON(),
+            ...appointment.datavalues.toJSON(),
             Doctor_Name: doctorName,
             Department_Name: departmentName,
             Doctor_Room_Number: doctorRoomNumber,
@@ -97,6 +95,7 @@ const AppointmentController = {
           };
         })
       );
+
       if (!appointmentsWithDetails || appointmentsWithDetails.length === 0) {
         return res.status(404).json({ error: "No appointments found" });
       }

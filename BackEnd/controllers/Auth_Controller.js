@@ -335,10 +335,13 @@ const authController = {
 			if (!user) {
 				return res.status(404).json({ message: "User not found" });
 			}
+			
+			const userData = {...user.dataValues, Role:(user.dataValues.Role ? user.dataValues.Role.toLowerCase() : Role.toLowerCase())};
+			
 			res.status(200).json({
 				success: true,
 				message: "Authenticated",
-				user: {...user.dataValues, role:Role.toLowerCase()},
+				user: userData,
 			})
 		}
 		catch (err) {
