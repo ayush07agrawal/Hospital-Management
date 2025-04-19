@@ -21,13 +21,6 @@ const Tests = sequelize.define(
                 key: "Employee_ID"
             },
         },
-        Doctor_ID : {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Employee,
-                key: "Employee_ID"
-            },
-        },
         Test_Name : {
             type: DataTypes.STRING,
             references: {
@@ -35,16 +28,13 @@ const Tests = sequelize.define(
                 key: "Test_Name"
             },
         },
-        Room_Number : {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Room,
-                key: "Room_Number"
-            },
-        },
         Date_Time : {
             type: DataTypes.DATE,
             allowNull:false,
+        },
+        Report : {
+            type: DataTypes.STRING,
+            allowNull:true,
         },
     }
 );

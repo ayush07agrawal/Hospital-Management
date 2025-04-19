@@ -9,15 +9,6 @@ const Treatment_Details = sequelize.define("Treatment_Details", {
 		autoIncrement: true,
 	},
 
-	Patient_ID: {
-		type: DataTypes.INTEGER,
-		allowNull: false,
-		references: {
-			model: Patient,
-			key: "Patient_ID",
-		},
-	},
-
 	Name: {
 		type: DataTypes.STRING(255),
 		allowNull: true,
