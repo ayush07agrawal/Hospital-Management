@@ -25,6 +25,8 @@ import Department from "./Department.js";
 import Department_Has_Doctor from "./Department_Has_Doctor.js";
 import Contact_Us from "./Contact_Us.js";
 import Feedback from "./Feedback.js";
+import Treatment_Note from "./Treatment_Note.js";
+import Appointment_Note from "./Appointment_Note.js";
 
 Patient.hasOne(Patient_Auth, { foreignKey: "Patient_ID", onDelete: "CASCADE" });
 Patient_Auth.belongsTo(Patient, { foreignKey: "Patient_ID" });
@@ -64,6 +66,7 @@ export {
   Employee,
   Feedback,
   Medicine,
+  Treatment_Note,
   Payment,
   Pays,
   Pharmacy,

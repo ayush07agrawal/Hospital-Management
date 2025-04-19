@@ -17,6 +17,8 @@ import Appointment_Routes from "./routes/Appointment_Routes.js";
 import Treatment_Details_Routes from "./routes/Treatment_Details_Routes.js";
 import Employee_Routes from "./routes/Employee_Routes.js";
 import Room_Routes from "./routes/Room_Routes.js";
+import Appointment_Note from "./models/Appointment_Note.js";
+import Treatment_Note from "./models/Treatment_Note.js";
 
 dotenv.config();
 
