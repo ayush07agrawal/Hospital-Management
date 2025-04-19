@@ -3,6 +3,7 @@ import Patient from "../models/Patient.js";
 import Employee from "../models/Employee.js";
 
 const verifyToken = async (req, res, next) => {
+	// console.log("Middleware called");
 	const token = req.cookies.token;
 	next();
 	return;

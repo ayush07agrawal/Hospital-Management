@@ -6,7 +6,8 @@ const Room_Controller = {
   getAllRooms: async (req, res) => {
     try {
       const allRooms = await Room.findAll();
-      res.status(200).json(allRooms);
+      const roomData = allRooms.map((room) => room.dataValues);
+      res.status(200).json(roomData);
     } catch (error) {
       res.status(500).json({ message: "Error fetching records", error });
     }
