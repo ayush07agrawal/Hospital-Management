@@ -4,7 +4,6 @@ export const getAllEmployees = async (req, res) => {
   try {
     const Employees = await Employee.findAll();
     const employeeData = Employees.map(emp => emp.dataValues);
-    console.log(employeeData);
     res.status(200).json(employeeData);
   } catch (error) {
     res.status(500).json({ error: "Error fetching Employees" });

@@ -168,22 +168,54 @@ const adminController = {
   getAllStats: async (req, res) => {
     try {
       const now = new Date();
-      const today = new Date(now.setHours(0, 0, 0, 0));
-      const lastWeek = new Date(today);
-      lastWeek.setDate(today.getDate() - 7);
+      const today = new Date(now.setHours(0, 0, 0, 0)); // Start of today
   
+      // Get the current day of the week (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
+      const dayOfWeek = today.getDay();
+      
+      // Get last Monday's date
+      const lastMonday = new Date(today);
+      lastMonday.setDate(today.getDate() - dayOfWeek - 7); // Go back to the previous Monday
+  
+      // Get last Sunday’s date (end of last week)
+      const lastSunday = new Date(lastMonday);
+      lastSunday.setDate(lastMonday.getDate() + 6); // Last Sunday is 6 days after last Monday
+  
+      // Get the current week's Monday (this week)
+      const currentMonday = new Date(today);
+      currentMonday.setDate(today.getDate() - dayOfWeek); // Get the most recent Monday
+      
+      // Get the upcoming week's Monday (next Monday)
+      const upcomingMonday = new Date(today);
+      upcomingMonday.setDate(today.getDate() - dayOfWeek + 7); // Next Monday
+  
+      // Get the next Sunday (end of this week)
+      const currentSunday = new Date(currentMonday);
+      currentSunday.setDate(currentMonday.getDate() + 6); // This week's Sunday
+  
+      // Get start of the current month (1st of the month)
+      const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      
+      // Get end of the current month (last day of the month)
+      const endOfThisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); 
+  
+      // Get start of last month (1st of the last month)
       const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
   
+      // Get end of last month (last day of last month)
+      const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0); 
+  
+      // Get start of last year (1st of January of last year)
       const startOfLastYear = new Date(today.getFullYear() - 1, 0, 1);
+  
+      // Get end of last year (31st of December of last year)
       const endOfLastYear = new Date(today.getFullYear() - 1, 11, 31);
   
-      const upcomingWeek = new Date(today);
-      upcomingWeek.setDate(today.getDate() + 7);
+      // Get upcoming Sunday (end of next week)
+      const upcomingSunday = new Date(upcomingMonday);
+      upcomingSunday.setDate(upcomingMonday.getDate() + 6); // Next Sunday is 6 days after next Monday
   
-      const endOfThisMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  
+      // Fetch appointments, patients, and departments
       const appointments = await Appointment.findAll({
         attributes: ['Date_Time', 'Department_ID'],
         raw: true,
@@ -198,14 +230,15 @@ const adminController = {
         attributes: ['Department_ID', 'Department_Name'],
         raw: true,
       });
-      // console.log(departments);
+  
       const departmentMap = {};
       departments.forEach(dep => {
         departmentMap[dep.Department_ID] = dep.Department_Name;
       });
   
-      // Grouped Stats
+      // Initialize Stats Data
       const lastWeekData = initWeekData();
+      const currentWeekData = initWeekData();
       const lastMonthData = initMonthWeekData();
       const lastYearData = initYearMonthData();
       const upcomingWeekData = initWeekData();
@@ -213,30 +246,47 @@ const adminController = {
       const allYearsMap = {};
   
       const departmentDataMap = {};
+  
+      // Loop through appointments and categorize them
       appointments.forEach(app => {
         const date = new Date(app.Date_Time);
         const day = getDayName(date);
         const month = date.getMonth();
         const year = date.getFullYear();
   
-        // last week
-        if (date >= lastWeek && date < today) {
+        // last week (previous Monday to previous Sunday)
+        if (date >= lastMonday && date <= lastSunday) {
           const entry = lastWeekData.find(d => d.name === day);
+          if (entry) entry.appointments++;
+        }
+  
+        // current week (this week's Monday to this Sunday's date)
+        if (date >= currentMonday && date <= currentSunday) {
+          const entry = currentWeekData.find(d => d.name === day);
           if (entry) entry.appointments++;
         }
   
         // last month
         if (date >= startOfLastMonth && date <= endOfLastMonth) {
           lastMonthData[getWeekOfMonth(date) - 1].appointments++;
+  
+          // Add to last year if the year is last year
+          if (date.getFullYear() === startOfLastYear.getFullYear()) {
+            lastYearData[month].appointments++;
+          }
         }
   
-        // last year
-        if (date >= startOfLastYear && date <= endOfLastYear) {
+        // last year (excluding dates already counted via last month)
+        if (
+          date >= startOfLastYear &&
+          date <= endOfLastYear &&
+          !(date >= startOfLastMonth && date <= endOfLastMonth)
+        ) {
           lastYearData[month].appointments++;
         }
   
-        // upcoming week
-        if (date >= today && date <= upcomingWeek) {
+        // upcoming week (next Monday to next Sunday)
+        if (date >= upcomingMonday && date <= upcomingSunday) {
           const entry = upcomingWeekData.find(d => d.name === day);
           if (entry) entry.appointments++;
         }
@@ -252,23 +302,24 @@ const adminController = {
         }
         allYearsMap[year]++;
   
-        // department (used for pie)
+        // department (used for pie chart)
         if (!departmentDataMap[app.Department_ID]) {
           departmentDataMap[app.Department_ID] = 0;
         }
         departmentDataMap[app.Department_ID]++;
       });
   
+      // Format all years data
       const allYears = Object.keys(allYearsMap)
         .sort()
         .map(year => ({ name: year, appointments: allYearsMap[year] }));
   
+      // Gender pie data
       const genderCount = {
         'M': 0,
         'F': 0,
         'O': 0,
       };
-  
       patients.forEach(p => {
         if (genderCount[p.Gender] !== undefined) genderCount[p.Gender]++;
       });
@@ -277,15 +328,17 @@ const adminController = {
         name: gender,
         value: genderCount[gender],
       }));
-
   
+      // Format department data
       const departmentData = Object.keys(departmentDataMap).map(depId => ({
         name: departmentMap[depId] || `Department ${depId}`,
         value: departmentDataMap[depId],
       }));
   
+      // Send the response
       res.status(200).json({
         lastWeek: lastWeekData,
+        currentWeek: currentWeekData,
         lastMonth: lastMonthData,
         lastYear: lastYearData,
         upcomingWeek: upcomingWeekData,
@@ -298,7 +351,7 @@ const adminController = {
       console.error("Admin analytics error:", error);
       res.status(500).json({ message: "Server Error", error });
     }
-  },
+  }  
 };
 
 export default adminController;
