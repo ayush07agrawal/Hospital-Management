@@ -1,6 +1,8 @@
 import nodemailler from "nodemailer";
 
-import { Employee, Feedback, Patient } from "../models/index.js";
+import Employee from "../models/Employee.js";
+import Feedback from "../models/Feedback.js";
+import Patient from "../models/Patient.js";
 
 const feedbackController = {
     sendFeedback: async (req, res) => {

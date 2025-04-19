@@ -1,5 +1,6 @@
-import { Department, Employee } from "../models/index.js";
-import { Department_Has_Doctor } from "../models/index.js";
+import Department from "../models/index.js";
+import Employee from "../models/index.js";
+import Department_Has_Doctor from "../models/index.js";
 
 const departmentController = {
   getAllDepartments: async (req, res) => {

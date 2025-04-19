@@ -1,50 +1,60 @@
-import sequelize from "../config/database.js";
 import { DataTypes } from "sequelize";
-import Employee from "./Employee.js";
+import sequelize from "../config/database.js";
 import Patient from "./Patient.js";
-import Treatment from "./Treatment_Details.js";
+import Employee from "./Employee.js";
+import Treatment_Details from "./Treatment_Details.js";
 import Prescription from "./Prescription.js";
 
-const Prescribes = sequelize.define("Prescribes", {
-  Treatment_ID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Treatment,
-      key: "Treatment_ID",
+const Prescribes = sequelize.define(
+  "Prescribes",
+  {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    Treatment_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Treatment_Details, key: "Treatment_ID" },
     },
-  },
-
-  Patient_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Patient,
-      key: "Patient_ID",
+    Patient_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Patient, key: "Patient_ID" },
     },
-  },
-
-  Prescription_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Prescription,
-      key: "Prescription_ID",
+    Prescription_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: Prescription, key: "Prescription_ID" },
     },
-  },
-
-  Employee_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: Employee,
-      key: "Employee_ID",
+    Employee_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: Employee, key: "Employee_ID" },
     },
+    Date_Time: { type: DataTypes.DATE, allowNull: false },
   },
+  { tableName: "Prescribes", timestamps: true }
+);
 
-  Date_Time: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-});
+Prescribes.associate = (models) => {
+  models.Prescribes.belongsTo(models.Patient, {
+    foreignKey: "Patient_ID",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  models.Prescribes.belongsTo(models.Employee, {
+    foreignKey: "Employee_ID",
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
+  });
+  models.Prescribes.belongsTo(models.Treatment_Details, {
+    foreignKey: "Treatment_ID",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+  models.Prescribes.belongsTo(models.Prescription, {
+    foreignKey: "Prescription_ID",
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+  });
+};
 
 export default Prescribes;

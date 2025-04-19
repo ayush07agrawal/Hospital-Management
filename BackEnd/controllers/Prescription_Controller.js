@@ -1,8 +1,8 @@
-import {Prescription} from "../models/index.js";
-import {Contains_Med} from "../models/index.js";
-import {Requires_Test} from "../models/index.js";
-import {Medicine} from "../models/index.js";
-import {Test_Details} from "../models/index.js";
+import Prescription from "../models/index.js";
+import Contains_Med from "../models/index.js";
+import Requires_Test from "../models/index.js";
+import Medicine from "../models/index.js";
+import Test_Details from "../models/index.js";
 
 const prescriptionController = {
     getAllPrescriptionById: async (req, res) => {
@@ -156,7 +156,6 @@ const prescriptionController = {
                 };
             }
 
-            // Return the prescription details
             res.status(200).json({ success: true, prescriptions: prescriptionDetails });
         } catch(error) {
             return res.status(500).json({ success: false, message: "Failed to fetch prescription by name." });

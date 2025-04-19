@@ -1,4 +1,4 @@
-import { Room } from "../models/index.js";
+import Room from "../models/index.js";
 
 // Controller for handling designated routes
 const Room_Controller = {

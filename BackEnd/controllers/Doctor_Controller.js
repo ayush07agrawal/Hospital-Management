@@ -1,8 +1,6 @@
-import {
-  Appointment,
-  Department_Has_Doctor,
-  Employee,
-} from "../models/index.js";
+import Appointment from "../models/index.js";
+import Department_Has_Doctor from "../models/index.js";
+import Employee from "../models/index.js";
 import { Op } from "sequelize";
 
 const doctorController = {
@@ -216,12 +214,17 @@ const doctorController = {
         return res.status(404).json({ message: "No upcoming appointments" });
       }
 
-      res.status(200).json({Total_Appointments: appointments.length, Appointments: appointments});
+      res
+        .status(200)
+        .json({
+          Total_Appointments: appointments.length,
+          Appointments: appointments,
+        });
     } catch (error) {
       console.error("Error fetching upcoming appointments:", error);
       res.status(500).json({ message: "Internal server error" });
     }
-  }
+  },
 };
 
 export default doctorController;

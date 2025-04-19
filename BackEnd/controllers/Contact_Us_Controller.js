@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-import { Contact_Us } from "../models/index.js";
+import Contact_Us from "../models/index.js";
 
 const contactUsController = {
   sendMessage: async (req, res) => {

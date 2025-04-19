@@ -2,7 +2,7 @@ import Tests from "../models/Tests.js";
 
 const Tests_Controller = {
   // Get all tests
-  async getAllTests(req, res) {
+  getAllTests: async (req, res) => {
     try {
       const tests = await Tests.findAll();
       res.status(200).json(tests);
@@ -12,7 +12,7 @@ const Tests_Controller = {
   },
 
   // Get tests by Patient ID
-  async getTestsByPatientId(req, res) {
+  getTestsByPatientId: async (req, res) => {
     const { Patient_ID } = req.params;
     try {
       const tests = await Tests.findAll({ where: { Patient_ID } });
@@ -26,7 +26,7 @@ const Tests_Controller = {
   },
 
   // Get tests by Employee ID
-  async getTestsByEmployeeId(req, res) {
+  getTestsByEmployeeId: async (req, res) => {
     const { Employee_ID } = req.params;
     try {
       const tests = await Tests.findAll({ where: { Employee_ID } });
@@ -40,7 +40,7 @@ const Tests_Controller = {
   },
 
   // Get tests by Doctor ID
-  async getTestsByDoctorId(req, res) {
+  getTestsByDoctorId: async (req, res) => {
     const { Doctor_ID } = req.params;
     try {
       const tests = await Tests.findAll({ where: { Doctor_ID } });
@@ -54,7 +54,7 @@ const Tests_Controller = {
   },
 
   // Add a new test
-  async addTest(req, res) {
+  addTest: async (req, res) => {
     const { Patient_ID, Employee_ID, Doctor_ID, Test_Name, Room_Number, Date_Time } = req.body;
     try {
       const newTest = await Tests.create({ Patient_ID, Employee_ID, Doctor_ID, Test_Name, Room_Number, Date_Time });
@@ -65,7 +65,7 @@ const Tests_Controller = {
   },
 
   // Update a test by Patient ID and Test Name
-  async updateTest(req, res) {
+  updateTest: async (req, res) => {
     const { Patient_ID, Test_Name } = req.params;
     const { Employee_ID, Doctor_ID, Room_Number, Date_Time } = req.body;
     try {
@@ -81,7 +81,7 @@ const Tests_Controller = {
   },
 
   // Delete a test by Patient ID and Test Name
-  async deleteTest(req, res) {
+  deleteTest: async (req, res) => {
     const { Patient_ID, Test_Name } = req.params;
     try {
       const test = await Tests.findOne({ where: { Patient_ID, Test_Name } });

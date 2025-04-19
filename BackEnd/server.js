@@ -17,6 +17,7 @@ import Appointment_Routes from "./routes/Appointment_Routes.js";
 import Treatment_Details_Routes from "./routes/Treatment_Details_Routes.js";
 import Employee_Routes from "./routes/Employee_Routes.js";
 import Room_Routes from "./routes/Room_Routes.js";
+import Lab_Assistant_Routes from "./routes/Lab_Assistant_Routes.js";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use("/appointment", Appointment_Routes);
 app.use("/treatmentDetails", Treatment_Details_Routes);
 app.use("/employees", Employee_Routes);
 app.use("/room", Room_Routes);
+app.use("/labassistant", Lab_Assistant_Routes);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

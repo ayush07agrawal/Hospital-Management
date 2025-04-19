@@ -1,4 +1,4 @@
-import { Contains_Med } from '../models/Contains_Med';
+import Contains_Med from '../models/Contains_Med';
 
 const containsMedController = {
     // Get all prescription medications
