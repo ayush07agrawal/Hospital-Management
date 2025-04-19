@@ -222,10 +222,9 @@ const AppointmentController = {
       const appointmentsWithPatientName = await Promise.all(
         appointments.map(async (appointment) => {
           const patient = await Patient.findByPk(appointment.Patient_ID);
-          const Name = patient ? `${patient.First_Name} ${patient.Last_Name}` : "Unknown Patient";
           return {
             ...appointment.toJSON(),
-            Patient_Name: Name,
+            Patient_Details: patient,
           };
         })
       );
