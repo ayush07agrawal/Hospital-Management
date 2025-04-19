@@ -205,41 +205,38 @@ const AppointmentController = {
     }
   },
 
-  getDoctorAppointmentsByMonth: async (req, res) => {
+  getDoctorAppointments: async (req, res) => {
     try {
       const doctorID = req.params.id;
-      const { month, year } = req.query;
-      const startDate = new Date(year, month - 1, 1);
-      const endDate = new Date(year, month, 0);
+  
       const appointments = await Appointment.findAll({
         where: {
           Employee_ID: doctorID,
-          Date_Time: {
-            [Op.gte]: startDate,
-            [Op.lte]: endDate,
-          },
         },
       });
+
       if (!appointments || appointments.length === 0) {
         return res.status(404).json({ error: "No appointments found" });
       }
-      //Add patient name to the appointment object
+
       const appointmentsWithPatientName = await Promise.all(
         appointments.map(async (appointment) => {
           const patient = await Patient.findByPk(appointment.Patient_ID);
-          const Name = patient.First_Name + " " + patient.Last_Name;
+          const Name = patient ? `${patient.First_Name} ${patient.Last_Name}` : "Unknown Patient";
           return {
             ...appointment.toJSON(),
             Patient_Name: Name,
           };
         })
       );
+  
       res.status(200).json(appointmentsWithPatientName);
-    } catch (error) {
-      console.error("Error fetching appointments by month:", error);
+    }
+    catch (error) {
+      console.error("Error fetching appointments for doctor:", error);
       res.status(500).json({ error: "Failed to fetch appointments" });
     }
-  },
+  },  
 
   getDoctorAppointmentsByDate: async (req, res) => {
     try {

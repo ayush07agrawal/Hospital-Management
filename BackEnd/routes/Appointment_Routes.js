@@ -8,7 +8,7 @@ router.get('/getAllAppointmentsByPatient/:id', AppointmentController.getAllAppoi
 router.post('/bookAppointment', AppointmentController.bookAppointment);
 router.post('/updateAppointment/:id', AppointmentController.updateAppointment);
 router.delete('/removeAppointment/:id', AppointmentController.deleteAppointment);
-router.get('/getAllAppointmentsByDoctor/:id', AppointmentController.getDoctorAppointmentsByMonth);
+router.get('/getAllAppointmentsByDoctor/:id', AppointmentController.getDoctorAppointments);
 router.get('/getDoctorAppointmentsByDate/:id', AppointmentController.getDoctorAppointmentsByDate);
 
 export default router;
