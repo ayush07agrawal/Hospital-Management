@@ -1,3 +1,4 @@
+import Prescribes from "../models/Prescribes.js";
 import Treatment_Details from "../models/Treatment_Details.js";
 import Treatments from "../models/Treatments.js";
 
@@ -41,11 +42,27 @@ const Treatment_Details_Controller = {
         })
       );
 
-      if (!treatmentDetails) {
+      if(!treatmentDetails) {
         return res.status(404).json({ message: "Treatment not found" });
       }
 
-      res.status(200).json(treatmentDetails);
+      const treatmentDetailsWithPrescription = await Promise.all(
+        treatmentDetails.map(async (treatment) => {
+          const prescription = await Prescribes.findAll({
+            where: { Treatment_ID: treatment.Treatment_ID },
+          });
+          return {
+            ...treatment,
+            Prescription: prescription,
+          };
+        })
+      );
+
+      if (!treatmentDetailsWithPrescription) {
+        return res.status(404).json({ message: "Treatment not found" });
+      }
+
+      res.status(200).json(treatmentDetailsWithPrescription);
     } catch (error) {
       res
         .status(500)
