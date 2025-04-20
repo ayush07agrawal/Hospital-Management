@@ -1,16 +1,18 @@
-import { Department, Employee } from "../models/index.js";
-import { Department_Has_Doctor } from "../models/index.js";
+import sequelize from "../config/database.js";
 
 const departmentController = {
   getAllDepartments: async (req, res) => {
     try {
-      const allDepartments = await Department.findAll();
-      if (!allDepartments) {
+      const [allDepartments] = await sequelize.query(`
+        SELECT * FROM Departments;
+      `);
+
+      if (!allDepartments || allDepartments.length === 0) {
         return res.status(401).json({ message: "No departments found!" });
       }
+
       res.status(200).json(allDepartments);
-    }
-    catch (error) {
+    } catch (error) {
       res.status(500).json({ error: "Error fetching departments" });
     }
   },
@@ -19,33 +21,46 @@ const departmentController = {
     const department_name = req.params.depname;
 
     try {
-      const department = await Department.findOne({
-        where: { Department_Name: department_name },
-      });
-      if (!department) {
+      // Get the department
+      const [departmentResult] = await sequelize.query(
+        `SELECT * FROM Departments WHERE Department_Name = :depname LIMIT 1;`,
+        {
+          replacements: { depname: department_name },
+        }
+      );
+
+      if (!departmentResult || departmentResult.length === 0) {
         return res.status(404).json({ message: "Department not found" });
       }
 
-      const doctors = await Department_Has_Doctor.findAll({
-        where: { Department_ID: department.Department_ID },
-      });
+      const department = departmentResult[0];
 
-      if (!doctors.length) {
+      // Get all doctors in the department
+      const [doctorLinks] = await sequelize.query(
+        `SELECT Doctor_ID FROM Department_Has_Doctors WHERE Department_ID = :dep_id;`,
+        {
+          replacements: { dep_id: department.Department_ID },
+        }
+      );
+
+      if (!doctorLinks || doctorLinks.length === 0) {
         return res
           .status(404)
           .json({ message: "No doctors found for this department" });
       }
 
-      const doctorIds = doctors.map((doc) => doc.Doctor_ID);
+      const doctorIds = doctorLinks.map((doc) => doc.Doctor_ID);
 
-      const doctorInfo = await Employee.findAll({
-        where: {
-          Employee_ID: doctorIds,
-        },
-      });
+      // Get doctor info from Employees table
+      const [doctorInfo] = await sequelize.query(
+        `SELECT * FROM Employees WHERE Employee_ID IN (:ids);`,
+        {
+          replacements: { ids: doctorIds },
+        }
+      );
 
-      if (!doctorInfo) {
-        res.status(401).json({ message: "No Doctor found!" });
+      if (!doctorInfo || doctorInfo.length === 0) {
+        return res.status(401).json({ message: "No Doctor found!" });
       }
 
       res.status(200).json(doctorInfo);
