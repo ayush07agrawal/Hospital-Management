@@ -135,7 +135,7 @@ const adminController = {
       First_Name,
       Last_Name,
       Email_ID,
-      password,
+      Password,
       Role,
       Address,
       Mobile_Number,
@@ -187,6 +187,34 @@ const adminController = {
 
 			const [result] = await sequelize.query(query, {
 				replacements: values,
+				transaction: t,
+			});
+
+      const employeeId = await Employee.findOne({
+				where: { Email_ID: Email_ID },
+				attributes: ["Employee_ID"],
+				transaction: t,
+			});
+
+			if (!employeeId) {
+				return res.status(404).json({
+					message: "Employee not found",
+				});
+			}
+
+			const hashedPassword = await bcrypt.hash(Password, 10);
+
+			const query_auth = `
+        UPDATE Employee_Auths 
+          SET Password = ?
+        WHERE Employee_ID = ?;
+      `;
+
+			const values_auth = [hashedPassword, employeeId.Employee_ID];
+
+			// Execute raw SQL inside the transaction
+			const [result_auth] = await sequelize.query(query_auth, {
+				replacements: values_auth,
 				transaction: t,
 			});
 
