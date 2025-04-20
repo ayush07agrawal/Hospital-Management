@@ -27,6 +27,7 @@ import Contact_Us from "./Contact_Us.js";
 import Feedback from "./Feedback.js";
 import Treatment_Note from "./Treatment_Note.js";
 import Appointment_Note from "./Appointment_Note.js";
+import Appointment_Prescriptions from "./Appointment_Prescriptions.js";
 
 Patient.hasOne(Patient_Auth, { foreignKey: "Patient_ID", onDelete: "CASCADE" });
 Patient_Auth.belongsTo(Patient, { foreignKey: "Patient_ID" });
@@ -56,6 +57,7 @@ export {
   Patient,
   Admission,
   Appointment,
+  Appointment_Prescriptions,
   Bill,
   Contains_Med,
   Contact_Us,

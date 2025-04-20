@@ -1,3 +1,4 @@
+import Appointment_Note from "../models/Appointment_Note.js";
 import { Treatment_Note } from "../models/index.js";
 
 const noteController = {
@@ -26,8 +27,8 @@ const noteController = {
     addNoteAppointment: async (req, res) => {
         try {
             const { Appointment_ID, Note } = req.body;
-            const newNote = await Treatment_Note.create({ Appointment_ID, Note });
-            res.status(201).json(newNote);
+            const newNote = await Appointment_Note.create({ Appointment_ID, Note });
+            res.status(201).json({message: "Note added successfully", newNote});
         } catch (error) {
             res.status(500).json({ error: "Error adding appointment note" });
         }
@@ -35,7 +36,7 @@ const noteController = {
     removeNoteAppointment: async (req, res) => {
         try {
             const { Appointment_Note_ID } = req.params;
-            const note = await Treatment_Note.findOne({where: {Appointment_Note_ID}});
+            const note = await Appointment_Note.findOne({where: {Appointment_Note_ID}});
             if (!note) {
                 return res.status(404).json({ error: "Note not found" });
             }
