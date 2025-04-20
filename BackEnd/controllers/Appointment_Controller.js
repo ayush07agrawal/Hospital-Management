@@ -6,47 +6,47 @@ import { Op } from "sequelize";
 import Patient from "../models/Patient.js";
 
 function getPriorityFromReason(reason) {
-  if (!reason || typeof reason !== "string") return 5;
+	if (!reason || typeof reason !== "string") return 5;
 
-  const lowerReason = reason.toLowerCase();
+	const lowerReason = reason.toLowerCase();
 
-  if (
-    lowerReason.includes("chest pain") ||
-    lowerReason.includes("heart") ||
-    lowerReason.includes("stroke") ||
-    lowerReason.includes("severe bleeding")
-  ) {
-    return 1;
-  }
+	if (
+		lowerReason.includes("chest pain") ||
+		lowerReason.includes("heart") ||
+		lowerReason.includes("stroke") ||
+		lowerReason.includes("severe bleeding")
+	) {
+		return 1;
+	}
 
-  if (
-    lowerReason.includes("difficulty breathing") ||
-    lowerReason.includes("shortness of breath") ||
-    lowerReason.includes("high fever") ||
-    lowerReason.includes("head trauma")
-  ) {
-    return 2;
-  }
+	if (
+		lowerReason.includes("difficulty breathing") ||
+		lowerReason.includes("shortness of breath") ||
+		lowerReason.includes("high fever") ||
+		lowerReason.includes("head trauma")
+	) {
+		return 2;
+	}
 
-  if (
-    lowerReason.includes("infection") ||
-    lowerReason.includes("fracture") ||
-    lowerReason.includes("vomiting") ||
-    lowerReason.includes("diarrhea")
-  ) {
-    return 3;
-  }
+	if (
+		lowerReason.includes("infection") ||
+		lowerReason.includes("fracture") ||
+		lowerReason.includes("vomiting") ||
+		lowerReason.includes("diarrhea")
+	) {
+		return 3;
+	}
 
-  if (
-    lowerReason.includes("checkup") ||
-    lowerReason.includes("follow up") ||
-    lowerReason.includes("routine") ||
-    lowerReason.includes("headache")
-  ) {
-    return 4;
-  }
+	if (
+		lowerReason.includes("checkup") ||
+		lowerReason.includes("follow up") ||
+		lowerReason.includes("routine") ||
+		lowerReason.includes("headache")
+	) {
+		return 4;
+	}
 
-  return 5;
+	return 5;
 }
 
 const AppointmentController = {
@@ -99,14 +99,14 @@ const AppointmentController = {
         })
       );
 
-      if (!appointmentsWithDetails || appointmentsWithDetails.length === 0) {
-        return res.status(404).json({ error: "No appointments found" });
-      }
-      res.status(200).json(appointmentsWithDetails);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch appointment" });
-    }
-  },
+			if (!appointmentsWithDetails || appointmentsWithDetails.length === 0) {
+				return res.status(404).json({ error: "No appointments found" });
+			}
+			res.status(200).json(appointmentsWithDetails);
+		} catch (error) {
+			res.status(500).json({ error: "Failed to fetch appointment" });
+		}
+	},
 
   //Booking appointment
   bookAppointment: async (req, res) => {
@@ -114,11 +114,11 @@ const AppointmentController = {
       const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } =
         req.body;
 
-      const startOfDay = new Date(Date_Time);
-      startOfDay.setHours(0, 0, 0, 0);
+			const startOfDay = new Date(Date_Time);
+			startOfDay.setHours(0, 0, 0, 0);
 
-      const endOfDay = new Date(Date_Time);
-      endOfDay.setHours(23, 59, 59, 999);
+			const endOfDay = new Date(Date_Time);
+			endOfDay.setHours(23, 59, 59, 999);
 
       // Check if the doctor is available on the specified date
       const alreadyBooked = await Appointment.findOne({
@@ -132,27 +132,27 @@ const AppointmentController = {
         },
       });
 
-      if (alreadyBooked) {
-        return res.status(400).json({
-          error: "Appointment already booked for same date with same doctor!",
-        });
-      }
-      const Department_ID = await Department.findOne({
-        where: {
-          Department_Name: Department_Name,
-        },
-      });
+			if (alreadyBooked) {
+				return res.status(400).json({
+					error: "Appointment already booked for same date with same doctor!",
+				});
+			}
+			const Department_ID = await Department.findOne({
+				where: {
+					Department_Name: Department_Name,
+				},
+			});
 
-      if (!Department_ID) {
-        return res.status(400).json({ error: "Department not found" });
-      }
+			if (!Department_ID) {
+				return res.status(400).json({ error: "Department not found" });
+			}
 
-      const Duration = await Department_Has_Doctor.findOne({
-        where: {
-          Doctor_ID: Employee_ID,
-          Department_ID: Department_ID.Department_ID,
-        },
-      });
+			const Duration = await Department_Has_Doctor.findOne({
+				where: {
+					Doctor_ID: Employee_ID,
+					Department_ID: Department_ID.Department_ID,
+				},
+			});
 
       if (!Duration) {
         return res
@@ -162,24 +162,24 @@ const AppointmentController = {
 
       //Add priority to the appointment object and create the appointment
       const Priority = getPriorityFromReason(Reason);
-      const newAppointment = await Appointment.create({
-        Patient_ID: Patient_ID,
-        Employee_ID: Employee_ID,
-        Department_ID: Department_ID.Department_ID,
-        Date_Time: Date_Time,
-        Duration: Duration.Appointment_Duration,
-        Reason: Reason,
-        Priority: Priority,
-      });
-      if (!newAppointment) {
-        return res.status(400).json({ error: "Failed to create appointment" });
-      }
-      res.status(201).json(newAppointment);
-    } catch (error) {
-      console.log("Error:", error);
-      res.status(500).json({ error: "Failed to create appointment" });
-    }
-  },
+			const newAppointment = await Appointment.create({
+			  Patient_ID: Patient_ID,
+			  Employee_ID: Employee_ID,
+			  Department_ID: Department_ID.Department_ID,
+			  Date_Time: Date_Time,
+			  Duration: Duration.Appointment_Duration,
+			  Reason: Reason,
+			  Priority: Priority,
+			});
+			if (!newAppointment) {
+			  return res.status(400).json({ error: "Failed to create appointment" });
+			}
+			res.status(201).json(newAppointment);
+		} catch (error) {
+			console.log("Error:", error);
+			res.status(500).json({ error: "Failed to create appointment" });
+		}
+	},
 
   //Update an appointment
   updateAppointment: async (req, res) => {
@@ -224,9 +224,9 @@ const AppointmentController = {
         },
       });
 
-      if (!appointments || appointments.length === 0) {
-        return res.status(404).json({ error: "No appointments found" });
-      }
+			if (!appointments || appointments.length === 0) {
+				return res.status(404).json({ error: "No appointments found" });
+			}
 
       //Add the name of the patient to the appointment object
       const appointmentsWithPatientName = await Promise.all(

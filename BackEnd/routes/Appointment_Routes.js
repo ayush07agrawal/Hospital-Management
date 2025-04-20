@@ -13,6 +13,6 @@ router.get('/getAllAppointmentsByDoctor/:id', AppointmentController.getDoctorApp
 router.get('/getDoctorAppointmentsByDate/:id', AppointmentController.getDoctorAppointmentsByDate);
 
 router.post('/addNote', noteController.addNoteAppointment);
-router.post('/removeNote', noteController.removeNoteAppointment);
+// router.post('/removeNote', noteController.removeNoteAppointment);
 
 export default router;

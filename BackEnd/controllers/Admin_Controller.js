@@ -6,55 +6,40 @@ import sequelize from "../config/database.js";
 import bcrypt from "bcrypt";
 
 const dayOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const monthOrder = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const getDayName = (date) => dayOrder[date.getDay()];
 const getWeekOfMonth = (date) => Math.ceil(date.getDate() / 7);
 
-const initWeekData = () =>
-  dayOrder.map((day) => ({ name: day, appointments: 0 }));
+const initWeekData = () => dayOrder.map((day) => ({ name: day, appointments: 0 }));
 const initMonthWeekData = () =>
-  Array(4)
-    .fill(0)
-    .map((_, i) => ({ name: `Week ${i + 1}`, appointments: 0 }));
-const initYearMonthData = () =>
-  monthOrder.map((month) => ({ name: month, appointments: 0 }));
+	Array(4)
+		.fill(0)
+		.map((_, i) => ({ name: `Week ${i + 1}`, appointments: 0 }));
+const initYearMonthData = () => monthOrder.map((month) => ({ name: month, appointments: 0 }));
 
 const adminController = {
-  //Add employees to the employee table
-  addEmployee: async (req, res) => {
-    const {
-      First_Name,
-      Last_Name,
-      Email_ID,
-      Role,
-      Address,
-      Mobile_Number,
-      Date_Of_Birth,
-      Gender,
-      Data_Of_Joining,
-      Languages,
-      Account_Number,
-      Password
-    } = req.body;
+	//Add employees to the employee table
+	addEmployee: async (req, res) => {
+		const {
+			First_Name,
+			Last_Name,
+			Email_ID,
+			Role,
+			Address,
+			Mobile_Number,
+			Date_Of_Birth,
+			Gender,
+			Data_Of_Joining,
+			Languages,
+			Account_Number,
+			Password,
+		} = req.body;
 
-    const t = await sequelize.transaction(); // Begin transaction
+		const t = await sequelize.transaction(); // Begin transaction
 
-    try {
-      const query = `
+		try {
+			const query = `
         INSERT INTO Employees 
           (First_Name, Last_Name, Email_ID_ID, Role, 
           Address, Mobile_Number, Date_Of_Birth, Gender, 
@@ -63,90 +48,85 @@ const adminController = {
           (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
       `;
 
-      const values = [
-        First_Name,
-        Last_Name,
-        Email_ID,
-        Role,
-        Address,
-        Mobile_Number,
-        Date_Of_Birth,
-        Gender,
-        Data_Of_Joining,
-        Languages,
-        Account_Number,
-        new Date(),
-        new Date(),
-      ];
+			const values = [
+				First_Name,
+				Last_Name,
+				Email_ID,
+				Role,
+				Address,
+				Mobile_Number,
+				Date_Of_Birth,
+				Gender,
+				Data_Of_Joining,
+				Languages,
+				Account_Number,
+				new Date(),
+				new Date(),
+			];
 
-      // Execute raw SQL inside the transaction
-      const [result] = await sequelize.query(query, {
-        replacements: values,
-        transaction: t,
-      });
+			// Execute raw SQL inside the transaction
+			const [result] = await sequelize.query(query, {
+				replacements: values,
+				transaction: t,
+			});
 
-      const employeeId = await Employee.findOne({
-        where: { Email_ID_ID: Email_ID },
-        attributes: ["Employee_ID"],
-        transaction: t,
-      });
+			const employeeId = await Employee.findOne({
+				where: { Email_ID: Email_ID },
+				attributes: ["Employee_ID"],
+				transaction: t,
+			});
 
-      if (!employeeId) {
-        return res.status(404).json({
-          message: "Employee not found",
-        });
-      }
+			if (!employeeId) {
+				return res.status(404).json({
+					message: "Employee not found",
+				});
+			}
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+			const hashedPassword = await bcrypt.hash(Password, 10);
 
-      const query_auth = `
+			const query_auth = `
         INSERT INTO Employee_Auths 
           (Employee_ID, Password, createdAt, updatedAt)
         VALUES 
           (?, ?, ?, ?);
       `;
 
-      const values_auth = [
-        employeeId.Employee_ID,
-        hashedPassword,
-        new Date(),
-        new Date(),
-      ];
+			const values_auth = [employeeId.Employee_ID, hashedPassword, new Date(), new Date()];
 
-      // Execute raw SQL inside the transaction
-      const [result_auth] = await sequelize.query(query_auth, {
-        replacements: values_auth,
-        transaction: t,
-      });
+			// Execute raw SQL inside the transaction
+			const [result_auth] = await sequelize.query(query_auth, {
+				replacements: values_auth,
+				transaction: t,
+			});
 
-      await t.commit();
+			await t.commit();
 
-      res.status(201).json({
-        message: "Employee added successfully",
-        employeeId: result.insertId,
-      });
-    } catch (error) {
-      await t.rollback(); // Rollback transaction
-      console.log("Error:", error);
-      res.status(500).json({ message: "Error adding employee", error });
-    }
-  },
+			res.status(201).json({
+				message: "Employee added successfully",
+				employeeId: result.insertId,
+			});
+		} catch (error) {
+			await t.rollback(); // Rollback transaction
+			console.log("Error:", error);
+			res.status(500).json({ message: "Error adding employee", error });
+		}
+	},
 
-  //Remove employee from the employee table
-  removeEmployee: async (req, res) => {
-    const { id } = req.params;
-    try {
-      //Finding the employee by ID and deleting it from the database
-      const employee = await Employee.destroy({ where: { Employee_ID: id } });
-      if (employee) {
-        res.status(200).json({ message: "Employee removed successfully" });
-      } else {
-        res.status(404).json({ message: "Employee not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Error removing employee", error });
-    }
-  },
+	//Remove employee from the employee table
+	removeEmployee: async (req, res) => {
+		const { id } = req.params;
+		try {
+			//Finding the employee by ID and deleting it from the database
+			const employee = await Employee.destroy({ where: { Employee_ID: id } });
+			if (employee) {
+				res.status(200).json({ message: "Employee removed successfully" });
+			} else {
+				res.status(404).json({ message: "Employee not found" });
+			}
+		} catch (error) {
+			res.status(500).json({ message: "Error removing employee", error });
+		}
+	},
 
   //Updating the details of an employee
   updateEmployee: async (req, res) => {
@@ -166,10 +146,10 @@ const adminController = {
       Account_Number,
     } = req.body;
 
-    const t = await sequelize.transaction(); // Begin transaction
+		const t = await sequelize.transaction(); // Begin transaction
 
-    try {
-      const query = `
+		try {
+			const query = `
         UPDATE Employees
         SET
           First_Name = ?,
@@ -205,72 +185,72 @@ const adminController = {
         id,
       ];
 
-      const [result] = await sequelize.query(query, {
-        replacements: values,
-        transaction: t,
-      });
+			const [result] = await sequelize.query(query, {
+				replacements: values,
+				transaction: t,
+			});
 
-      if (result.affectedRows > 0) {
-        await t.commit();
-        res.status(200).json({ message: "Employee updated successfully" });
-      } else {
-        await t.rollback();
-        res.status(404).json({ message: "Employee not found" });
-      }
-    } catch (error) {
-      console.log("Error:", error);
-      await t.rollback();
-      res.status(500).json({ message: "Error updating employee", error });
-    }
-  },
+			if (result.affectedRows > 0) {
+				await t.commit();
+				res.status(200).json({ message: "Employee updated successfully" });
+			} else {
+				await t.rollback();
+				res.status(404).json({ message: "Employee not found" });
+			}
+		} catch (error) {
+			console.log("Error:", error);
+			await t.rollback();
+			res.status(500).json({ message: "Error updating employee", error });
+		}
+	},
 
-  //Remove patients from the patient table
-  removePatients: async (req, res) => {
-    const { id } = req.params;
-    try {
-      //Finding the patient by ID and deleting it from the database
-      const patient = await Patient.destroy({ where: { Patient_ID: id } });
-      if (patient) {
-        res.status(200).json({ message: "Patient removed successfully" });
-      } else {
-        res.status(404).json({ message: "Patient not found" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Error removing patient", error });
-    }
-  },
+	//Remove patients from the patient table
+	removePatients: async (req, res) => {
+		const { id } = req.params;
+		try {
+			//Finding the patient by ID and deleting it from the database
+			const patient = await Patient.destroy({ where: { Patient_ID: id } });
+			if (patient) {
+				res.status(200).json({ message: "Patient removed successfully" });
+			} else {
+				res.status(404).json({ message: "Patient not found" });
+			}
+		} catch (error) {
+			res.status(500).json({ message: "Error removing patient", error });
+		}
+	},
 
-  terminateEmployee: async (req, res) => {
-    const { id } = req.params;
+	terminateEmployee: async (req, res) => {
+		const { id } = req.params;
 
-    const t = await sequelize.transaction(); // Begin transaction
+		const t = await sequelize.transaction(); // Begin transaction
 
-    try {
-      const query = `
+		try {
+			const query = `
         UPDATE Employees
         SET Status = ?
         WHERE Employee_ID = ?;
       `;
 
-      const values = ["Terminated", id];
+			const values = ["Terminated", id];
 
-      const [result] = await sequelize.query(query, {
-        replacements: values,
-        transaction: t,
-      });
+			const [result] = await sequelize.query(query, {
+				replacements: values,
+				transaction: t,
+			});
 
-      if (result.affectedRows > 0) {
-        await t.commit();
-        res.status(200).json({ message: "Employee terminated successfully" });
-      } else {
-        await t.rollback();
-        res.status(404).json({ message: "Employee not found" });
-      }
-    } catch (error) {
-      await t.rollback();
-      res.status(500).json({ message: "Error terminating employee", error });
-    }
-  },
+			if (result.affectedRows > 0) {
+				await t.commit();
+				res.status(200).json({ message: "Employee terminated successfully" });
+			} else {
+				await t.rollback();
+				res.status(404).json({ message: "Employee not found" });
+			}
+		} catch (error) {
+			await t.rollback();
+			res.status(500).json({ message: "Error terminating employee", error });
+		}
+	},
 
   //Fetch all the stats for the admin dashboard
   getAllStats: async (req, res) => {
