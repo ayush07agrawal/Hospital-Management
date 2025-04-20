@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+import Treatments from "./Treatments.js";
 
 const Treatment_Note = sequelize.define(
   "Treatment_Note",
@@ -7,7 +8,7 @@ const Treatment_Note = sequelize.define(
     Treatment_ID: {
       type: DataTypes.INTEGER,
       references: {
-        model: "Treatment_Details",
+        model: Treatments,
         key: "Treatment_ID",
       },
     },
