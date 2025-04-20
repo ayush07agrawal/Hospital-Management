@@ -10,6 +10,8 @@ import Employee from "../models/Employee.js";
 const otpStore = new Map();
 
 const authController = {
+
+	// User login function
 	loginUser: async (req, res) => {
 		let { first_name, last_name, email, password, role } = req.body;
 
@@ -18,11 +20,13 @@ const authController = {
 		last_name = last_name.toLowerCase();
 
 		try {
+			//Check if the email is valid
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(email)) {
 				return res.status(400).json({ message: "Invalid email" });
 			}
 
+			//Check if the role is patient or employee
 			if (role === "patient") {
 				const patient = await Patient.findOne({
 					where: {
@@ -42,10 +46,12 @@ const authController = {
 				const isPasswordValid = await bcrypt.compare(password, patientAuth.Password);
 				if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials" });
 
+				// Generate JWT token
 				const token = jwt.sign({ Role:'patient', First_Name:patient.First_Name, Email_ID: patient.Email_ID }, process.env.JWT_SECRET, {
 					expiresIn: "24h",
 				});
 
+				// Set the token in a cookie
 				res.cookie("token", token, {
 					httpOnly: true,
 					secure: process.env.NODE_ENV === "production", 
@@ -57,7 +63,7 @@ const authController = {
 			}
 
 			if (role === "employee") {
-				// If special database management user
+				// If admin login
 				if (
 					first_name === "database" &&
 					last_name === "management" &&
@@ -68,6 +74,7 @@ const authController = {
 					return res.status(200).json({ role: "admin", message: "Login successful", token });
 				}
 
+				//For employee login
 				const employee = await Employee.findOne({
 					where: {
 						First_Name: first_name,
@@ -111,6 +118,7 @@ const authController = {
 		}
 	},
 
+	//To verify the email of the user using mail
 	mailVerify: async (req, res) => {
 		const { email } = req.body;
 
@@ -120,6 +128,7 @@ const authController = {
 				return res.status(400).json({ message: "Invalid email" });
 			}
 
+			//Generate the OTP and send it to the email
 			const otp = Math.floor(100000 + Math.random() * 900000);
 
 			const transporter = nodemailer.createTransport({
@@ -153,6 +162,7 @@ const authController = {
 		}
 	},
 
+	//Verify the OTP sent to the email
 	verifyOTP: async (req, res) => {
 		const { email, otp } = req.body;
 		try {
@@ -165,6 +175,7 @@ const authController = {
 				otpStore.delete(email);
 				return res.status(400).json({ message: "OTP expired" });
 			}
+			//Compare the OTP stored in the map with the OTP entered by the user
 			if (String(otp) !== String(OTP)) {
 				return res.status(400).json({ message: "Invalid OTP" });
 			}
@@ -176,6 +187,7 @@ const authController = {
 		}
 	},
 
+	//Patient signup function
 	patientSignUp: async (req, res) => {
 		const {
 			First_Name,
@@ -193,6 +205,7 @@ const authController = {
 			crfmPassword,
 		} = req.body;
 
+		//Create the patient object
 		const patientData = {
 			First_Name: First_Name,
 			Last_Name: Last_Name,
@@ -206,6 +219,7 @@ const authController = {
 			Weight: Weight,
 		};
 		try {
+			//Compare the password and confirm password
 			if (password !== crfmPassword) {
 				return res.status(400).json({ message: "Password mismatch" });
 			}
@@ -224,6 +238,7 @@ const authController = {
 				Patient_ID: newPatient.Patient_ID,
 			};
 
+			//Add the patient to the Patient_Auth table
 			const addAuthPatient = await Patient_Auth.create(patientAuth);
 
 			if (!addAuthPatient) {
@@ -236,6 +251,7 @@ const authController = {
 		}
 	},
 
+	//Updating the password of the user
 	updatePassword: async (req, res) => {
 		const { first_name, last_name, email, newPassword } = req.body;
 
@@ -256,6 +272,8 @@ const authController = {
 				return res.status(404).json({ message: "User not found" });
 			}
 
+			// Check if the new password is different from the old password
+			//Change the password of the user
 			const get_Password = await Patient_Auth.findOne({
 				where: { Patient_ID: patient.Patient_ID },
 			});
@@ -280,11 +298,13 @@ const authController = {
 		}
 	},
 
+	//Logout the user. Delete the cookie and send the response
 	logoutUser:async (req, res) => {
 		res.clearCookie("token", { httpOnly: true, secure: process.env.NODE_ENV === "production" });
 		res.status(200).json({ message: "Logged out successfully" });
 	},
 
+	//Get the patient or employee by name and email
 	getPatientByName: async (req, res) => {
 		try {
 			const { First_Name, role, Email_ID } = req.body;

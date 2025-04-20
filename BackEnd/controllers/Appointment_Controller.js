@@ -50,6 +50,7 @@ function getPriorityFromReason(reason) {
 }
 
 const AppointmentController = {
+  //Get all appointments
   getAllAppointments: async (req, res) => {
     try {
       const appointments = await Appointment.findAll();
@@ -62,6 +63,7 @@ const AppointmentController = {
     }
   },
 
+  //Get appointment by Patient ID
   getAllAppointmentsByPatient: async (req, res) => {
     try {
       const appointment = await Appointment.findAll({
@@ -69,6 +71,7 @@ const AppointmentController = {
           Patient_ID: req.params.id,
         },
       });
+      //Adding appointment details to the appointment object
       const appointmentsWithDetails = await Promise.all(
         appointment.map(async (appointment) => {
           const doctor = await Employee.findOne({
@@ -105,6 +108,7 @@ const AppointmentController = {
     }
   },
 
+  //Booking appointment
   bookAppointment: async (req, res) => {
     try {
       const { Patient_ID, Employee_ID, Date_Time, Reason, Department_Name } =
@@ -116,6 +120,7 @@ const AppointmentController = {
       const endOfDay = new Date(Date_Time);
       endOfDay.setHours(23, 59, 59, 999);
 
+      // Check if the doctor is available on the specified date
       const alreadyBooked = await Appointment.findOne({
         where: {
           Employee_ID,
@@ -155,6 +160,7 @@ const AppointmentController = {
           .json({ error: "Doctor not found in the specified department" });
       }
 
+      //Add priority to the appointment object and create the appointment
       const Priority = getPriorityFromReason(Reason);
       const newAppointment = await Appointment.create({
         Patient_ID: Patient_ID,
@@ -175,6 +181,7 @@ const AppointmentController = {
     }
   },
 
+  //Update an appointment
   updateAppointment: async (req, res) => {
     try {
       const { id } = req.params;
@@ -190,6 +197,7 @@ const AppointmentController = {
     }
   },
 
+  //Delete an appointment
   deleteAppointment: async (req, res) => {
     try {
       const appointment = await Appointment.findByPk(req.params.id);
@@ -205,6 +213,7 @@ const AppointmentController = {
     }
   },
 
+  //Get all appointments for a specific doctor by their ID
   getDoctorAppointments: async (req, res) => {
     try {
       const doctorID = req.params.id;
@@ -219,6 +228,7 @@ const AppointmentController = {
         return res.status(404).json({ error: "No appointments found" });
       }
 
+      //Add the name of the patient to the appointment object
       const appointmentsWithPatientName = await Promise.all(
         appointments.map(async (appointment) => {
           const patient = await Patient.findByPk(appointment.Patient_ID);
@@ -237,6 +247,7 @@ const AppointmentController = {
     }
   },  
 
+  //Get all appointments for a specific doctor by their ID and date
   getDoctorAppointmentsByDate: async (req, res) => {
     try {
       const doctorID = req.params.id;

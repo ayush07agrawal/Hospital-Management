@@ -6,6 +6,6 @@ const router = express.Router();
 // router.get('/getAllPrescriptions', prescriptionController.getAllPrescriptions);
 router.get('/getPrescriptionById/:id', prescriptionController.getAllPrescriptionById);
 router.get('/getPrescriptionByName', prescriptionController.getPrescriptionByName);
-// router.post('/addPrescription', prescriptionController.addPrescription);
+router.post('/addPrescription', prescriptionController.addPrescription);
 
 export default router;

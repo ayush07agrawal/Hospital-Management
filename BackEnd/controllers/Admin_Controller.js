@@ -37,17 +37,18 @@ const adminController = {
   //Add employees to the employee table
   addEmployee: async (req, res) => {
     const {
-      first_name,
-      last_name,
-      email,
-      role,
-      address,
-      mobile_number,
-      date_of_birth,
-      gender,
-      date_of_joining,
-      languages,
-      account_number,
+      First_Name,
+      Last_Name,
+      Email_ID,
+      Role,
+      Address,
+      Mobile_Number,
+      Date_Of_Birth,
+      Gender,
+      Data_Of_Joining,
+      Languages,
+      Account_Number,
+      Password
     } = req.body;
 
     const t = await sequelize.transaction(); // Begin transaction
@@ -55,7 +56,7 @@ const adminController = {
     try {
       const query = `
         INSERT INTO Employees 
-          (First_Name, Last_Name, Email_ID, Role, 
+          (First_Name, Last_Name, Email_ID_ID, Role, 
           Address, Mobile_Number, Date_Of_Birth, Gender, 
           Data_Of_Joining, Languages, Account_Number, createdAt, updatedAt)
         VALUES 
@@ -63,17 +64,17 @@ const adminController = {
       `;
 
       const values = [
-        first_name,
-        last_name,
-        email,
-        role,
-        address,
-        mobile_number,
-        date_of_birth,
-        gender,
-        date_of_joining,
-        languages,
-        account_number,
+        First_Name,
+        Last_Name,
+        Email_ID,
+        Role,
+        Address,
+        Mobile_Number,
+        Date_Of_Birth,
+        Gender,
+        Data_Of_Joining,
+        Languages,
+        Account_Number,
         new Date(),
         new Date(),
       ];
@@ -85,7 +86,7 @@ const adminController = {
       });
 
       const employeeId = await Employee.findOne({
-        where: { Email_ID: email },
+        where: { Email_ID_ID: Email_ID },
         attributes: ["Employee_ID"],
         transaction: t,
       });
@@ -151,18 +152,18 @@ const adminController = {
   updateEmployee: async (req, res) => {
     const { id } = req.params;
     const {
-      first_name,
-      last_name,
-      email,
+      First_Name,
+      Last_Name,
+      Email_ID,
       password,
-      role,
-      address,
-      mobile_number,
-      date_of_birth,
-      gender,
-      date_of_joining,
-      languages,
-      account_number,
+      Role,
+      Address,
+      Mobile_Number,
+      Date_Of_Birth,
+      Gender,
+      Data_Of_Joining,
+      Languages,
+      Account_Number,
     } = req.body;
 
     const t = await sequelize.transaction(); // Begin transaction
@@ -173,7 +174,7 @@ const adminController = {
         SET
           First_Name = ?,
           Last_Name = ?,
-          Email_ID = ?,
+          Email_ID_ID = ?,
           Role = ?,
           Address = ?,
           Mobile_Number = ?,
@@ -188,17 +189,17 @@ const adminController = {
       `;
 
       const values = [
-        first_name,
-        last_name,
-        email,
-        role,
-        address,
-        mobile_number,
-        date_of_birth,
-        gender,
-        date_of_joining,
-        languages,
-        account_number,
+        First_Name,
+        Last_Name,
+        Email_ID,
+        Role,
+        Address,
+        Mobile_Number,
+        Date_Of_Birth,
+        Gender,
+        Data_Of_Joining,
+        Languages,
+        Account_Number,
         new Date(),
         new Date(),
         id,
@@ -391,14 +392,14 @@ const adminController = {
         .sort()
         .map((year) => ({ name: year, appointments: allYearsMap[year] }));
   
-      const genderCount = { M: 0, F: 0, O: 0 };
+      const GenderCount = { M: 0, F: 0, O: 0 };
       patients.forEach((p) => {
-        if (genderCount[p.Gender] !== undefined) genderCount[p.Gender]++;
+        if (GenderCount[p.Gender] !== undefined) GenderCount[p.Gender]++;
       });
   
-      const pieData = Object.keys(genderCount).map((gender) => ({
-        name: gender,
-        value: genderCount[gender],
+      const pieData = Object.keys(GenderCount).map((Gender) => ({
+        name: Gender,
+        value: GenderCount[Gender],
       }));
   
       const departmentData = Object.keys(departmentDataMap).map((depId) => ({
