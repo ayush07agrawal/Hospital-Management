@@ -40,7 +40,6 @@ const adminController = {
       first_name,
       last_name,
       email,
-      password,
       role,
       address,
       mobile_number,
