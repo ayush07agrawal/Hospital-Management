@@ -2,6 +2,8 @@
 
 A comprehensive, responsive, and highly secure web application designed to automate and streamline every facet of hospital operations. Built on a modern tech stack with **React.js** for the frontend, **Node.js (Express)** for the backend, **MySQL** for data persistence, and **Sequelize ORM** for robust database management, this system delivers a seamless experience for patients, administrative staff, and medical professionals alike.
 
+Frontend - [Repo Link](https://github.com/ayush07agrawal/Hospital_Mangement_Frontend)
+
 ---
 
 ## 📖 Table of Contents
